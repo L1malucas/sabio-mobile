@@ -1,0 +1,54 @@
+version: '3.8'
+ 
+services:
+  mariadb:
+    image: bitnami/mariadb:11.4.2
+    container_name: mariadb
+    environment:
+      - ALLOW_EMPTY_PASSWORD=no
+      - MARIADB_ROOT_PASSWORD=rootpassword123
+      - MARIADB_USER=renovadbuser
+      - MARIADB_PASSWORD=renovadbpass123
+      - MARIADB_DATABASE=rtraining_moodle
+    volumes:
+      - mariadb_data:/bitnami/mariadb
+    networks:
+      - moodle-network
+    restart: unless-stopped
+ 
+  moodle:
+    image: bitnami/moodle:4.4.2
+    container_name: moodle
+    ports:
+      - '8080:8080'
+      - '8443:8443'
+    environment:
+      - MOODLE_DATABASE_HOST=mariadb
+      - MOODLE_DATABASE_PORT_NUMBER=3306
+      - MOODLE_DATABASE_USER=renovadbuser
+      - MOODLE_DATABASE_PASSWORD=renovadbpass123
+      - MOODLE_DATABASE_NAME=rtraining_moodle
+      - MOODLE_USERNAME=renova_rtraining
+      - MOODLE_PASSWORD=2025@renova
+      - MOODLE_EMAIL=mauricio.menezes@renova.net.br
+      - MOODLE_SITE_NAME=R-Training
+    volumes:
+      - moodle_data:/bitnami/moodle
+      - moodledata_data:/bitnami/moodledata
+    networks:
+      - moodle-network
+    depends_on:
+      - mariadb
+    restart: unless-stopped
+ 
+volumes:
+  mariadb_data:
+    driver: local
+  moodle_data:
+    driver: local
+  moodledata_data:
+    driver: local
+ 
+networks:
+  moodle-network:
+    driver: bridge
