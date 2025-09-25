@@ -1,0 +1,77 @@
+ <cub3-header [titulo]="'Calculadora de <br /> <b>IMC</b>'" [voltar]="true" [icone]="'calculator-outline'" [exibirAvatar]="false"></cub3-header>
+
+<ion-content>
+
+        <ion-row>
+          <ion-col>
+            <h4 class="header4">Calcular <b>Índice de Massa Corpórea</b></h4>
+          </ion-col>
+        </ion-row>
+        <div id="container">
+	        <ion-row>
+	        	<ion-col size="6">
+	        		<ion-label>
+	        			Altura (Ex: 1.70)
+	        		</ion-label>
+	        		<ion-button full color="secondary" (click)="selecionarAltura()">
+	        			{{dados.altura ? dados.altura + "m" :  'Selecionar altura'}}
+	        		</ion-button>
+	        	</ion-col>
+	        	<ion-col size="6">
+	        		<ion-label>
+	        			Peso (Ex: 72.0)
+	        		</ion-label>      
+	        		<ion-button full color="secondary" (click)="selecionarPeso()">
+						{{dados.peso ? dados.peso + " KG" :  'Selecionar peso'}}
+	        		</ion-button>
+	        	</ion-col>
+	        </ion-row>
+
+	        <ion-row *ngIf="dados.peso && dados.altura">
+	        	<ion-col>
+	        		<br />
+	        		{{getImc('texto')}}
+	        	</ion-col>
+	        	<ion-col>
+	        		<b>Resultado:</b>
+	        		<br />
+	        		<ion-badge color="primary">{{getImc('valor')}}</ion-badge>
+	        	</ion-col>
+	        	<ion-row>
+	        		<ion-col>
+	        			<ion-button fill="outline" color="success" (click)="salvar()">Salvar</ion-button>
+	        		</ion-col>
+	        	</ion-row>
+	        </ion-row>
+
+
+				    <ng-container *ngIf="getResultados().length > 0">
+				    <ion-row>
+				      <ion-col>
+				        <h4 class="header4">Últimos <b>resultados</b>
+				    </h4>
+				      </ion-col>
+				    </ion-row>
+				    <ion-list class="notify-list" >
+					    <ion-row class="list-header">
+					    	<ion-col size="6">
+					    		<span style='font-weight:bold;text-align:center;width:100%;display:block'>Data</span>
+					    	</ion-col>
+					    	<ion-col size="6">
+					    		<span style='font-weight:bold;text-align:center;width:100%;display:block'>Resultado</span>
+					    	</ion-col>
+					    </ion-row>
+				    	<ion-item lines="none" *ngFor="let item of getResultados()">
+				    		<ion-row>
+				    			<ion-col size="6">
+				    			<span style='text-align:center;width:100%;display:block'>{{item.data | amDateFormat: 'DD/MM/YYYY HH:mm'}}</span>
+				    			</ion-col>
+				    			<ion-col size="6">
+				    				<span style='text-align:center;width:100%;display:block'><ion-badge>item.resultado</ion-badge></span>
+				    			</ion-col>
+				    		</ion-row>
+				    	</ion-item>
+					</ion-list>
+				</ng-container>
+	    </div>
+</ion-content>

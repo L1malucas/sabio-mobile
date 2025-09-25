@@ -1,0 +1,243 @@
+ <cub3-header [titulo]="'Nova <br /> <b>atividade</b>'" [voltar]="true" [icone]="'bookmarks-outline'" [exibirAvatar]="false"></cub3-header>
+<ion-content> 
+    <div id="container">
+        
+		<ion-segment  value="informacoes" scrollable="true" [(ngModel)]="abaAtiva">
+		  <ion-segment-button value="informacoes">
+		    <ion-label><ion-icon name="information-outline"></ion-icon> Informações</ion-label>
+		  </ion-segment-button>
+		  <ion-segment-button value="turmas">
+		    <ion-label><ion-icon name="navigate-outline"></ion-icon> Turmas</ion-label>
+		  </ion-segment-button>
+		  <ion-segment-button value="tarefas">
+		    <ion-label><ion-icon name="checkbox-outline"></ion-icon> Tarefas</ion-label>
+		  </ion-segment-button>
+		  <ion-segment-button value="material">
+		    <ion-label><ion-icon name="folder-outline"></ion-icon> Material</ion-label>
+		  </ion-segment-button>
+		  <ion-segment-button value="quiz">
+		    <ion-label><ion-icon name="help-outline"></ion-icon> Quiz</ion-label>
+		  </ion-segment-button> 
+		</ion-segment>
+		<br />
+		<ng-container [ngSwitch]="abaAtiva">
+			<ng-container *ngSwitchCase="'informacoes'"> 
+	        <ion-row>
+	          <ion-col>
+	            <h4 class="header4"><b>Informações sobre a atividade</b><br /><small>Selecione uma data e preencha informações referentes à atividade:</small></h4>
+	            
+	          </ion-col>
+	        </ion-row> 
+		<ion-card > 
+		  <ion-card-content style="padding:0"> 
+		  		<ion-list> 
+					<ion-title><ion-icon name="book-outline"></ion-icon> Título da atividade</ion-title>
+				<ion-list>
+					<ion-item class="box-conteudo">
+					  <ion-input name="titulo" [(ngModel)]="dados.titulo" [placeholder]="'Insira um título'"></ion-input>
+							<!-- <editor no-blur [(ngModel)]="dados.descricao" [init]="editorOptions" ></editor> -->
+						</ion-item>
+				</ion-list>
+<!-- 					<ion-item>
+						<ion-label>
+							<ion-icon name="book-outline"></ion-icon> Turma *
+						</ion-label>
+				 
+				    <ion-select  interface="popover"  [cancelText]="'Cancelar'" placeholder="Selecione um tipo" [(ngModel)]="dados.IDF_CONTEUDO" name="disciplina"  >
+				      <ion-select-option  value="1">Presencial</ion-select-option> 
+				      <ion-select-option  value="2">Remota</ion-select-option> 
+				      <ion-select-option  value="3">Híbrida</ion-select-option> 
+				    </ion-select>
+					</ion-item> -->
+					<!-- <ion-item>
+						<ion-label position="floating" >
+							<ion-icon name="book-outline"></ion-icon> Disciplina *
+						</ion-label>
+				 
+				    <ion-select  [interface]="'popover'"  [cancelText]="'Cancelar'" placeholder="Selecione uma disciplina"  *ngIf="!carregando && data.MOB_DISCIPLINAS.length > 0" [(ngModel)]="dados.disciplina_id" name="disciplina"  >
+				      <ion-select-option  *ngFor="let item of data.MOB_DISCIPLINAS" value="{{item.IDF_DISCIPLINA}}">{{item.NME_DISCIPLINA}}</ion-select-option> 
+				    </ion-select>
+					</ion-item>   -->
+					<!-- <ion-item>
+						<ion-label position="floating" >
+							<ion-icon name="book-outline"></ion-icon> Tipo de atividade *
+						</ion-label>
+				 
+				    <ion-select [interface]="'popover'" [cancelText]="'Cancelar'" placeholder="Selecione um tipo de atividade" [(ngModel)]="dados.tipo_atividade" name="tipo_atividade"  >
+				      <ion-select-option  value="1">Atividade avaliativa</ion-select-option> 
+				      <ion-select-option  value="2">De casa</ion-select-option> 
+				    </ion-select>
+					</ion-item>   -->
+		  			<ion-item *ngIf="!carregando && verificarTipoAtividade()">
+					  <ion-label position="floating" ><ion-icon name="calendar-outline"></ion-icon> Data de entrega da atividade*</ion-label>
+					  <ion-datetime displayFormat="DD/MM/YYYY"   name="data" [(ngModel)]="dados.data_entrega" cancelText="Cancelar" doneText="Confirmar" [placeholder]="'Toque para selecionar'" ></ion-datetime>
+					</ion-item> 
+				<!-- 	  <ion-item>
+					    <ion-textarea placeholder="Descrição da atividade *"   name="descricao" [(ngModel)]="dados.descricao"></ion-textarea>
+
+					  </ion-item>  -->
+		  		</ion-list>
+		  			<ion-title><ion-icon name="pencil-outline"></ion-icon> Descrição da atividade</ion-title>
+		  		<ion-list>
+		  			<ion-item class="box-conteudo">
+						<ion-input name="titulo" [(ngModel)]="dados.descricao" [placeholder]="'Insira uma descrição'"></ion-input>
+  							<!-- <editor no-blur [(ngModel)]="dados.descricao" [init]="editorOptions" ></editor> -->
+  						</ion-item>
+		  		</ion-list>
+		  	</ion-card-content>
+		</ion-card>
+			</ng-container>
+			<ng-container *ngSwitchCase="'turmas'">
+				<ion-row> 
+						<ion-col>
+			          	<ion-item lines="none">
+			            <h4 class="header4"><b>Turmas selecionadas</b><br /><small>Selecione as turmas participantes e acompanhe o andamento das entregas:</small></h4>	 
+	              		</ion-item>            
+			          </ion-col>
+			        </ion-row> 
+
+				<ion-row> 
+					<ion-list class="listOpcoes" style="width: 100%;">
+					  <ion-item    class="ion-activatable ripple-parent"  *ngFor="let item of turmas" (ionChange)="selecionarTurma($event, item)" >
+					    <ion-label><b>{{item.titulo}}</b> <br /><small><ng-container *ngIf="item.nomeEscola">{{item.nomeEscola}} - </ng-container></small></ion-label> 
+						<ion-toggle color="primary" slot="end" [(ngModel)]="item.selecionado"></ion-toggle>
+					    <ion-ripple-effect></ion-ripple-effect>
+					  </ion-item>
+					</ion-list>
+				</ion-row>
+			</ng-container>
+			<ng-container *ngSwitchCase="'tarefas'"> 
+			        <ion-row>
+			          <ion-col>
+			          	<ion-item lines="none">
+			            <h4 class="header4"><b>Tarefas da atividade</b><br /><small>Adicione tarefas e arraste-as para os lados ou clique na paginação para navegar entre os itens:</small></h4>			
+
+			              		<ion-button  size='default' color='warning' slot='end' (click)="addTarefa(sliderTarefas)" >
+			              			<ion-icon name="add-circle-outline"></ion-icon> Nova tarefa
+			              		</ion-button>
+			              		</ion-item>            
+			          </ion-col>
+			        </ion-row> 
+
+			      <ion-slides #sliderTarefas pager="true" [options]="{initialSlide: 0, speed: 400}">
+			        <ion-slide *ngFor="let tarefa of dados.tarefas; let i = index">
+				<ion-card style="margin:0;padding:0" > 
+				  <ion-card-content style="margin:0;padding:0"> 
+				  	<ion-list>
+					  	<ion-item lines="none">
+				  			<ion-title>
+				  				<ion-icon name="book-outline"></ion-icon> Tarefa {{i+1}}
+				  			</ion-title>
+			              		<ion-button  size='default' color='danger' fill="outline" slot='end' (click)="delTarefa(tarefa)">
+			              			<ion-icon   name="trash-bin-outline"  color='danger'></ion-icon> Excluir
+			              		</ion-button>
+				  		</ion-item>
+
+		  			<ion-item>
+					  <ion-label position="floating" ><ion-icon name="book-outline"></ion-icon> Título da tarefa *</ion-label>
+					  <ion-input name="titulo-tarefa" [(ngModel)]="tarefa.titulo" [placeholder]="'Insira um título'"></ion-input>
+					</ion-item>
+		  			<ion-item>
+					  <ion-label position="floating" ><ion-icon name="book-outline"></ion-icon> Link da tarefa (Opcional)</ion-label>
+					  <ion-input name="link-tarefa" [(ngModel)]="tarefa.link" [placeholder]="'Insira um link externo para a tarefa'"></ion-input>
+					</ion-item>
+		  			<ion-item>
+					  <ion-label position="floating" ><ion-icon name="book-outline"></ion-icon> Valor da tarefa</ion-label>
+					  <ion-input name="valor-tarefa" [(ngModel)]="tarefa.valor" [placeholder]="'Insira uma nota para a tarefa'"></ion-input>
+					</ion-item>
+				  	</ion-list>
+		  			<ion-title><ion-icon name="pencil-outline"></ion-icon> Descrição da tarefa</ion-title>
+			  		<ion-list>
+			  			<ion-item class="box-conteudo">
+							<ion-input name="titulo" [(ngModel)]="tarefa.descricao" [placeholder]="'Insira uma descrição'"></ion-input>
+	  						</ion-item>
+			  		</ion-list>
+		  			<ion-title><ion-icon name="document-outline"></ion-icon> Arquivos da tarefa</ion-title>
+			  		<ion-list>
+			  			<ion-item lines="none" >
+					<input 
+								    hidden 
+								    type="file" 
+								    #uploaderT
+								    (change)="uploadFileTarefa($event, tarefa)"
+								/>  
+	                  <ion-button (click)="enviarArquivoTarefa(uploaderT, tarefa)" style='min-width:224px;margin:auto' color="warning"><ion-icon name="cloud-upload-outline"></ion-icon> Enviar um arquivo...</ion-button>
+	  						</ion-item>
+	              	<ion-item *ngFor="let arquivo of tarefa.arquivos">
+	              		{{arquivo.arquivo}}
+	              		<ion-button  size='default' color='{{arquivo.stt == 1 ? "warning" : "danger"}}' fill='outline' slot='end' [disabled]="arquivo.stt == 1" (click)="delArquivoTarefa(tarefa, arquivo)">
+	              			<ion-icon   name="trash-bin-outline" color='danger'></ion-icon> Excluir
+	              		</ion-button>
+	              	</ion-item>
+			  		</ion-list>
+				  </ion-card-content>
+				</ion-card>
+			        </ion-slide> 
+			      </ion-slides>
+			</ng-container>
+			<ng-container *ngSwitchCase="'material'"> 
+			        <ion-row>
+			          <ion-col>
+			            <h4 class="header4"><b>Envio de material</b><br /><small>Envie imagens, documentos ou vídeos para a atividade:</small></h4>			            
+			          </ion-col>
+			        </ion-row> 
+				<ion-card > 
+				  <ion-card-content> 
+				  	<div id="box-upload" >
+					<input 
+								    hidden 
+								    type="file" 
+								    #uploader
+								    (change)="uploadFile($event)"
+								/>
+	                  <img src="assets/img/upload-icon.png" class="icone-upload" />
+	                  <h4>Envio de arquivos</h4> 
+	                  <small>Envio de materiais para a atividade...</small>
+	                  <ion-button (click)="enviarArquivo(uploader)" style='min-width:259.31px;' color="warning"><ion-icon name="cloud-upload-outline"></ion-icon> Enviar um arquivo...</ion-button>
+	                  <!-- <ion-button color="warning"><ion-icon name="search-outline"></ion-icon> Selecionar arquivo do sistema...</ion-button> -->
+	              </div>
+	              <ion-list class="listOpcoes" *ngIf="arquivos && arquivos.length > 0">
+	              	<ion-label>Arquivos:</ion-label>
+	              	<ion-item *ngFor="let arquivo of arquivos">
+	              		{{arquivo.nomeArquivo}}
+	              		<ion-button  size='default' color='{{arquivo.stt == 1 ? "warning" : "danger"}}' fill='outline' slot='end' [disabled]="arquivo.stt == 1" (click)="delArquivo(arquivo)">
+	              			<ion-icon   name="trash-bin-outline" color='danger'></ion-icon> Excluir
+	              		</ion-button>
+	              	</ion-item>
+	              </ion-list>
+				  </ion-card-content>
+				</ion-card>
+			</ng-container>
+			<ng-container *ngSwitchCase="'quiz'"> 
+			        <ion-row>
+			          <ion-col>
+			            <h4 class="header4"><b>Seleção de quizzes</b><br /><small>Selecione um ou mais quizzes para compor a atividade:</small></h4>			            
+			          </ion-col>
+			        </ion-row> 
+				<ion-card > 
+				  <ion-card-content>  
+				  	<ion-list class="listOpcoes" style='border-radius: 0px'>
+				  		<ion-item *ngFor="let quiz of quizes"> 
+				  			<ion-label>
+				  					<b>{{quiz.titulo}}</b><br />
+				  					<small>{{tratarHTML(quiz.descricao)}}</small>  
+				  				</ion-label>
+				  				    <ion-checkbox slot="end" [(ngModel)]="quiz.selecionado"></ion-checkbox>
+
+				  		</ion-item> 
+				  	</ion-list>
+				  		<p *ngIf="!quizes || (quizes && quizes.length == 0)" class="msg-vazio">Nenhum quiz disponível...</p>
+				  </ion-card-content>
+				</ion-card>
+			</ng-container>
+		</ng-container>
+
+	</div>
+
+  <ion-fab vertical="bottom" horizontal="end" slot="fixed">
+    <ion-fab-button (click)="submit()" color="success">
+      <ion-icon name="checkmark-circle-outline"></ion-icon>
+    </ion-fab-button>
+  </ion-fab>
+</ion-content>
+ 

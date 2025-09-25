@@ -1,0 +1,62 @@
+ <cub3-header [titulo]="'Quadro de<br /> <b>Horários</b>'" [voltar]="true" [icone]="'time-outline'" [exibirAvatar]="false"></cub3-header>
+<ion-content>
+	<div id="container">
+        <ion-row>
+          <ion-col>
+            <h4 class="header4">Lista de <b>horários</b></h4>
+          </ion-col>
+        </ion-row>
+		<div class="week-grid">
+		  <div *ngFor="let day of weekDays" (click)="selectDay(day)">
+			<span class="calendario-label">{{ day.label }}</span>
+			<div  [ngClass]="{'selected': isSelected(day), 'event': day.hasEvent}">
+				<span >{{ day.date.getDate() }}</span>
+				<span *ngIf="day.hasEvent" class="event-dot"></span>
+			</div>
+		  </div>
+		</div>
+		
+
+		<ion-list [ngClass]="{'slide-in': animate}"  class=" w-full">
+				<ng-container  *ngIf="filteredTurmasGroupedBySchool.length > 0">
+					<div *ngFor="let group of filteredTurmasGroupedBySchool">
+					<ion-item-divider>
+						<ion-label>
+						<h2>{{ group.school }}</h2>
+						</ion-label>
+					</ion-item-divider>
+					<!-- Aqui começa a iteração pelas turmas do grupo -->
+					<div *ngFor="let item of group.turmas">
+						<!-- Iteração por cada disciplina da turma -->
+						<div *ngFor="let disciplina of item.disciplinas">
+						<ion-item lines="full" class="w-full">
+							<ion-row class="w-full">
+							<ion-col size="2" class="time-column">
+								<div style="background: #eee;border-right: 1px solid #ddd;display: flex;justify-content: center;align-items: center;flex-direction: column;background-color: #fff6e8;padding: 10px;border-radius: 20px;">
+								<!-- Exibe o primeiro e último horário de aula da disciplina -->
+								<div style="font-size: 1em;">
+									{{ getHorarioDiscipinaInicio(disciplina.horarios) }}<br />{{ getHorarioDiscipinaInicio(disciplina.horarios, 'fim') }}
+								</div>
+								</div>
+							</ion-col>
+							<ion-col size="10" class="details-column">
+								<b>{{ item.titulo }}</b><br />
+								<!-- Mostra a disciplina corrente -->
+								<ion-badge color="secondary" style='margin-right:5px'>
+								{{ disciplina.DES_DISCIPLINA }}
+								</ion-badge> 
+							</ion-col>
+							</ion-row>
+						</ion-item>
+						</div>
+					</div>
+					</div>
+				</ng-container>
+				<ion-item  lines="none" *ngIf="filteredTurmasGroupedBySchool.length == 0">
+				  <p style="text-align:center;width:100%">Nenhuma aula disponível na grade de horários selecionada...</p>
+				</ion-item>
+		  </ion-list>
+		  
+	</div> 
+
+</ion-content>

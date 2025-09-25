@@ -1,0 +1,34 @@
+ion-spinner {
+	margin: 10px auto;
+	display: block;
+} 
+		.col-faltas, .col-btn, .col-notas {
+		    display: flex;
+		    justify-content: center;
+		    align-items: center;
+		    flex-direction: column;
+		    ion-row {
+
+		    display: flex;
+		    justify-content: center;
+		    align-items: center;
+		    flex-direction: column;
+		    text-align: center;
+		    }
+		}
+	.card-aluno { 
+    background: #eee !important;
+    --background: #eee !important;
+	}
+
+	.box-filtro {
+		width: 100%;
+	    display: block;
+	    padding-right: 20px;
+	    text-align: right;
+		.btn-filtro {
+			margin: auto;
+		}
+	}
+
+

@@ -1,0 +1,16 @@
+.listOpcoes {
+	ion-row {
+		width: 100%;
+	}
+}
+
+ion-card {
+	background: #fafafa;
+	padding: 10px;
+	ion-badge {
+		float: right;
+	}
+	ion-label {
+		width: 100%;
+	}
+}

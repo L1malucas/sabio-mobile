@@ -1,0 +1,317 @@
+ion-footer {
+  --background: #fff; /* Background color */
+  --border-style: none; /* Footer border */
+  --padding: 0;
+  ion-col {
+    padding:0;
+  }
+  ion-row {
+    padding:0;
+  }
+  ion-button {
+    border-radius: 10px;
+      span {
+        display: flex;
+        justify-content: center;
+        align-items: center; 
+        flex-direction: column;
+        padding: 5px 15px;
+        border-radius: 10px; 
+        font-weight: bold;
+        color: #999;
+        ion-icon {
+          margin:0;
+        }
+        ion-label {
+          color: #000 !important;
+          padding-top:2px;
+          font-size: 0.7em !important;
+        }
+      }
+  }
+  ion-button.active {
+    span {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      flex-direction: column;
+      // background: #eeeeee;
+      padding: 5px 15px;
+      border-radius: 10px;
+      color: var(--ion-color-primary);
+      font-weight: bold;
+      ion-label {
+        color: var(--ion-color-primary) !important;
+      }
+    }
+  }
+  
+}
+
+ion-button {
+  --padding-start: 0;
+  --padding-end: 0;
+  --padding-top: 0;
+  --padding-bottom: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+ion-icon {
+  font-size: 1.5rem; /* Icon size */
+}
+
+ion-label {
+  font-size: 0.8rem; /* Label font size */
+  display: block;
+}
+
+
+ion-segment {
+	padding: 0 10px 20px 10px;
+}
+
+.aulas-lista {
+  display: flex;
+    flex-wrap: wrap;
+    flex-direction: column;
+    overflow-x: auto;
+    width: 100%;
+    height: 200px;
+  ion-card {
+  	cursor: pointer;
+  	&:hover {
+  		opacity: .8;
+  	}
+    width: 33%;
+    float: left;
+    min-width: 300px;
+    border-radius: 15px;
+    --background: #000;
+
+
+    ion-card-content {
+         transition: background-image 1s linear;
+      &:after {
+        width: 100%;
+        height: 100%;
+        display: block;
+        position: absolute;
+        left: 0;
+        top: 0;
+        background: linear-gradient(to bottom, #dedede, #fff) !important;
+          opacity: 1;
+          z-index: 0;
+          content: '';
+      }
+
+      ion-label {
+        position: absolute;
+          bottom: 20px;
+
+          padding: 10px;
+          
+          display: block;
+          position: absolute;
+          span {
+
+            clear: both;
+            display: block;
+
+          }
+          span, small {
+            clear: both;
+            
+            position: relative;
+            z-index: 1;
+            padding: 5px 10px;
+            border-radius: 5px;
+            background: var(--ion-color-primary);
+            color: #000;
+          }
+          small {
+            display: inline-block;
+            margin-top: 5px;
+            background: #000;
+            color: white;
+          }
+      }
+    }
+  }
+}
+
+.p4 {
+  font-size: .9em;
+}
+.header4, .p4 {
+  padding: 0 20px;
+  margin:0; 
+}
+
+ion-spinner {
+  position: absolute;
+  left: calc(50% - 20px);
+  top:50%;  
+}
+
+.d-none {
+  display: none;
+  visibility: hidden;
+}
+
+.msg-vazio {
+width: 100%;
+    padding: 10px;
+    text-align: center;
+    display: block;
+    background: #fafafa;
+    padding: 30px;
+    border-radius: 20px;
+    max-width: 300px;
+    margin: 30px auto;
+    font-weight: bold;
+    background: #000;
+    color: white;
+}
+
+.avatar {
+    top:30px;
+    width: 40px;
+    height: 40px;
+    object-fit: cover;
+    border-radius: 50%;
+    margin: 10px;
+    position: absolute;
+    right: 20px;
+    z-index: 9;
+}
+.badge-horario { 
+    background: white;
+    color: black;
+    z-index: 1;
+    display: block;
+    position: absolute;
+    left: 25px;
+    font-size: .8em;
+}
+
+// ion-list {
+//   background: transparent !important;
+// }
+
+.id-aula {
+
+    position: absolute;
+    right: 25px;
+    z-index: 10;
+    background: #000;
+    color: white;
+    font-weight: bold;
+    font-size: .8em;
+    padding: 2px 5px;
+    border-radius: 4px;
+}
+
+
+.item-branco {
+  
+    background: #fff !important;
+    --background: #fff !important;
+}
+
+
+.listOpcoes {
+  ion-label { 
+  }
+  ion-icon {
+    color: white;
+    --color:white;
+  }
+}
+
+.week-grid {
+  display: flex;
+  justify-content: space-between;
+  padding: 0px 10px 10px 10px;
+  div {
+    text-align: center;
+    .calendario-label {
+      font-weight: bold;
+      font-size: .8em;
+    }
+    cursor: pointer;
+    padding: 10px;
+    position: relative;
+    .day-label {
+      display: block;
+      font-weight: bold;
+    }
+    .day-date {
+      display: block;
+    }
+    &.selected {
+      background-color: var(--ion-color-primary);
+      color: white;
+      border-radius: 50%; 
+      min-width: 40px;
+    }
+    &.event {
+      position: relative;
+      .event-dot {
+        position: absolute;
+        bottom: -10px;
+        left: 50%;
+        transform: translateX(-50%);
+        width: 6px;
+        height: 6px;
+        background-color: red;
+        border-radius: 50%;
+      }
+    }
+  }
+}
+
+ion-item-divider {
+  background-color: #f4f4f4;
+}
+
+.time-column {
+  text-align: center; 
+}
+
+.details-column {
+  display: block;
+}
+
+.slide-in {
+  animation: slideIn 0.5s forwards;
+}
+
+@keyframes slideIn {
+  from {
+    transform: translateX(100%);
+    opacity: 0;
+  }
+  to {
+    transform: translateX(0);
+    opacity: 1;
+  }
+}
+.assunto {
+
+  background: #fafafa;
+  padding: 10px;
+  font-size: .8em;
+  border-radius: 10px;
+}
+.linha-check {
+
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 100%;
+  ion-chip {
+    font-size: 0.7em; background-color: #fff; margin-right: 5px;
+  }
+}

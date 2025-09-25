@@ -1,0 +1,68 @@
+<cub3-header [titulo]="'Nova <br /> <b>avaliação</b>'" [voltar]="true" [icone]="'bookmarks-outline'"
+	[exibirAvatar]="false"></cub3-header>
+<ion-content>
+
+	<div id="container">
+
+		<ion-row>
+			<ion-col>
+				<h4 class="header4"><b>Informações sobre nova avaliação</b><br /><small>Selecione um tipo de avaliação e
+						preencha as informações relevantes:</small></h4>
+
+			</ion-col>
+		</ion-row>
+		<ion-card>
+			<ion-card-content>
+				<ion-list>
+					<ion-item>
+						<ion-label position="floating">
+							<ion-icon name="book-outline"></ion-icon> Disciplina *
+						</ion-label>
+
+						<ion-select [cancelText]="'Cancelar'" (ionChange)="getPeriodos()"
+							placeholder="Selecione uma disciplina" *ngIf="data.MOB_DISCIPLINAS.length > 0"
+							[(ngModel)]="dados.idDisciplina" name="disciplina">
+							<ion-select-option *ngFor="let item of data.MOB_DISCIPLINAS"
+								value="{{item.IDF_DISCIPLINA}}">{{item.DES_DISCIPLINA}}</ion-select-option>
+						</ion-select>
+					</ion-item>
+					<ion-item *ngIf="data.MOB_CONTEUDO">
+						<ion-label position="floating">
+							<ion-icon name="book-outline"></ion-icon> Período avaliativo *
+						</ion-label>
+
+						<ion-select [cancelText]="'Cancelar'" placeholder="Selecione um período"
+							*ngIf="data.MOB_CONTEUDO.length > 0" [(ngModel)]="dados.idPeriodo" name="periodo">
+							<ion-select-option *ngFor="let item of data.MOB_CONTEUDO" value="{{item.IDF_ETAPA}}">
+								{{item.TITULO}}</ion-select-option>
+						</ion-select>
+					</ion-item>
+					<ion-item>
+						<ion-label position="floating">
+							<ion-icon name="book-outline"></ion-icon> Tipo de avaliação *
+						</ion-label>
+
+						<ion-select [cancelText]="'Cancelar'" placeholder="Selecione um tipo" [(ngModel)]="dados.tipo"
+							name="tipo">
+							<ion-select-option value="NORMAL">Normal</ion-select-option>
+							<ion-select-option value="EXTRA">Ponto extra</ion-select-option>
+							<ion-select-option value="RECUPERACAO">Recuperação parcial</ion-select-option>
+						</ion-select>
+					</ion-item>
+
+
+					<ion-item>
+						<ion-textarea placeholder="Nome da avaliação *" name="assunto" [(ngModel)]="dados.titulo">
+						</ion-textarea>
+					</ion-item>
+				</ion-list>
+			</ion-card-content>
+		</ion-card>
+	</div>
+
+	<ion-fab vertical="bottom" horizontal="end" slot="fixed">
+		<ion-fab-button (click)="submit()" color="success">
+			<ion-icon name="checkmark-circle-outline"></ion-icon>
+		</ion-fab-button>
+	</ion-fab>
+</ion-content>

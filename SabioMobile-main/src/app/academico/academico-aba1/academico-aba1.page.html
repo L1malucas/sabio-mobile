@@ -1,0 +1,113 @@
+<ion-content [fullscreen]="true" no-padding> 
+    <cub3-header [titulo]="tituloAba" [exibirAvatar]="false"></cub3-header> 
+
+    <ion-slides pager="true" [options]="slideOpts">
+      <ion-slide>
+        <div class="banner" style="background-image: url('assets/img/bg-login2.JPG');">
+          <h1>Atualização cadastral</h1>
+          <p>Olá, <span class="bold">{{usuario.getNomeFormatado()}}</span>!</p><br />
+          <p>Seja bem-vindo ao aplicativo Sábio. Realize a atualização cadastral para receber notificações e informativos</p>
+        </div>
+      </ion-slide> 
+    </ion-slides>
+    <ng-container *ngIf="aulas && aulas.length > 0">
+    
+      <ion-row>
+        <ion-col>
+          <div style="display: flex; justify-content: space-between; align-items: center;">
+            <h4 class="header4" style='margin:0'>Últimas <b>aulas</b></h4>
+            <!-- <ion-button fill="clear" style="text-align: right;" [routerLink]="['/app/academico/academico-atividades']">
+              Ver tudo
+              <ion-icon slot="end" name="chevron-forward-outline" style="margin-right: 0;"></ion-icon>
+            </ion-button> -->
+          </div>
+        </ion-col>
+      </ion-row>
+  
+      <ion-row>
+        <ion-col style="padding:0;margin:0">
+          <ion-slides [options]='slideOptsConteudo' style="min-height: 220px;">
+            <ion-slide *ngFor='let item of atividades'>
+              <ion-card style="border-radius:15px" [routerLink]="['/app/academico/academico-atividade-editar/'+item.id]">
+                <img  src="assets/img/atividade-thumb.png" />
+  
+                <ion-card-header>
+                  <ion-card-title style="font-weight: bold;font-size:1em;color:black">{{item.titulo}}</ion-card-title>
+                  <ion-card-subtitle style="font-size: .8em;">Publicado em {{item.data_entrega | amDateFormat: 'DD/MM/YYYY'}}</ion-card-subtitle>
+                </ion-card-header>
+              
+                <ion-card-content> 
+                </ion-card-content>
+              
+                <!-- <ion-button fill="clear">Action 1</ion-button>  -->
+              </ion-card>
+            </ion-slide>
+          </ion-slides>
+   
+        </ion-col>
+      </ion-row>
+    </ng-container>
+    <ion-row>
+      <ion-col>
+        <div style="display: flex; justify-content: space-between; align-items: center;">
+          <h4 class="header4" style='margin:0'>Meus <b>alunos</b></h4>
+          <ion-button fill="clear" style="text-align: right;" [routerLink]="['/app/academico/academico-alunos-por-turma']">
+            Ver tudo
+            <ion-icon slot="end" name="chevron-forward-outline" style="margin-right: 0;"></ion-icon>
+          </ion-button>
+        </div>
+      </ion-col>
+    </ion-row>
+    <ion-row>
+    <ion-col style="padding:0;margin:0">
+      <ion-slides [options]='slideOptsConteudo'>
+        <ion-slide *ngFor='let item of alunos' [routerLink]="['/app/academico/academico-acompanhamentos/'+item.id]">
+          <div class="card-aluno">
+            <ion-badge slot="end" color="secondary" style='float:right;font-size:.6em; position:absolute;right:0;top:0'>{{item.id}}</ion-badge>
+            <ion-avatar>
+              <img src="assets/img/avatar-{{item.sexo == 2 ? 'menina' : 'menino'}}.jpg">
+            </ion-avatar>
+             <span style="font-weight: bold;font-size:.8em !important;">{{cub3Svc.normalizeString(cub3Svc.getPrimeiroUltimoNome(item.nome))}}</span>
+             <span style="font-size:.6em;">{{item.nomeTurma}}</span> 
+
+          </div>
+        </ion-slide>
+      </ion-slides>
+
+    </ion-col>
+  </ion-row>
+    <ion-row>
+      <ion-col>
+        <div style="display: flex; justify-content: space-between; align-items: center;">
+          <h4 class="header4" style='margin:0'>Minhas <b>turmas</b></h4>
+          <ion-button fill="clear" style="text-align: right;"  [routerLink]="['/app/home/academico/academico-abas/academico-aba3']">
+            Ver tudo
+            <ion-icon slot="end" name="chevron-forward-outline" style="margin-right: 0;"></ion-icon>
+          </ion-button>
+        </div>
+      </ion-col>
+      </ion-row>
+      <ion-row>
+      <ion-col style="padding:0;margin:0">
+        <ion-slides [options]='slideOptsConteudo'>
+          <ion-slide *ngFor='let item of turmas' [routerLink]="['/app/academico/academico-turma/'+item.id]">
+            <ion-card style="border-radius:15px">
+              <ion-card-header>
+                <ion-card-title style="font-weight: bold;font-size:.9em;">{{item.titulo}}</ion-card-title>
+                <ion-card-subtitle style="font-size:.8em">
+                  <ion-chip style="font-size: .8em;padding: 0 1em;height: 2.5em;font-weight: bold;margin: 0 0 1em 0;">
+                    {{cub3Svc.normalizeString(item.turno.descricao)}}
+                  </ion-chip><br /> {{cub3Svc.normalizeString(item.nomeEscola)}}</ion-card-subtitle>
+              </ion-card-header>
+            
+              <ion-card-content> 
+              </ion-card-content>
+            
+              <!-- <ion-button fill="clear">Action 1</ion-button>  -->
+            </ion-card>
+          </ion-slide>
+        </ion-slides>
+ 
+      </ion-col>
+    </ion-row>
+</ion-content>

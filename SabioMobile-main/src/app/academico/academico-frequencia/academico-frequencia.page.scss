@@ -1,0 +1,161 @@
+
+	.carregando {
+		margin:40px auto;
+	}
+	.alunos-lista, ion-card-content {
+		padding:0px;
+		margin:0px;
+	}
+	ion-card {
+		width: 100% !important;
+		margin:0px !important;
+		padding:0px !important;
+		ion-card-content {
+			padding: 0px !important;
+		}
+	}
+	.table-header {
+		h6 {
+			font-size: 12px !important;
+		}
+	}
+	.alunos-lista { 
+		margin:0px !important;
+		width: 100% !important;
+		.btnFrequencia {
+				
+	      max-width: 100%;
+	      --padding-start: 10px !important;
+	      --padding-end: 10px !important;
+	      margin: auto;
+	      display: block;
+	      position: relative;
+		}
+		.item.odd {
+			background: #eee;
+		}
+		.item {
+			height: 80px;
+			line-height: 50px;
+		vertical-align: middle;
+		justify-content: center;
+		border-bottom:1px solid #ccc;
+
+            &:active, &.active {
+                background:var(--ion-color-primary);
+                span, p, .label, h2 {
+                    color:white !important;
+                }
+                ion-icon {
+                    color:white !important;
+                }
+            }
+		input, input:disabled {
+			border: 2px solid var(--ion-color-secondary);
+			background:#ddd;
+			text-align:center; 
+			font-weight: bold;
+			opacity:1 !important;
+			width: 100%;
+			margin:0px;
+		}
+		.col {
+			text-overflow: ellipsis;
+			overflow: hidden;
+		} 
+		.aluno {
+			font-size:1rem;
+		    max-width: 100%;
+		    overflow: hidden;
+		    text-overflow: ellipsis;
+		    display: block;
+		}
+		}
+	}
+	.text-center {
+		text-align: center !important;
+		justify-content: center;
+	}
+
+	.btnFrequencia {
+		.icon {
+			padding-right: 10px;
+			font-size: 3rem;
+		}
+		&.ion-color-primary {
+			ion-icon {
+				color: var(--ion-color-primary);
+			}
+		}
+		&.ion-color-primary.button-solid {
+			ion-icon {
+				color:white;
+			}
+
+		}
+	}
+	.btnAusente {
+		float:right;
+		&.ion-color-danger {
+			ion-icon {
+				color: var(--ion-color-danger);
+			}
+		}
+		&.ion-color-danger.button-solid {
+			ion-icon {
+				color:white;
+			}
+
+		}
+	}
+	.btnPresente {
+		float:left;
+	}
+	ion-content {
+		height:calc(100vh - 50px);
+	}
+	ion-footer {
+		ion-col {
+			padding: 0;
+		    display: flex;
+		    justify-content: center;
+		    align-items: center; 
+		}
+		background: #eee;
+		border-top:2px solid #ddd;
+		
+		.btn-finalizar {
+			font-size: 1.2rem;
+			top:-14px;
+		}
+	}
+	.avatar {
+
+      width: 120px;
+      height: 120px;
+      border-radius: 50%;
+      margin: 0;
+
+      object-fit: cover;
+      object-position: center right;
+	}
+
+	ion-slides {
+
+    margin: 20px;
+    background: #fafafa;
+    align-items: center;
+    justify-content: center;
+    padding: 0;
+    border-radius: 20px;
+
+		ion-slide {
+
+    width: 100%;
+    padding: 20px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-direction: column;
+		}
+	}

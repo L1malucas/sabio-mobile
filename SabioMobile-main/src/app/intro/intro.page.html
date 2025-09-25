@@ -1,0 +1,58 @@
+<!-- 
+<ion-content>
+
+  <div [style.display]="'block'">
+    <div id="bg-login2"></div>
+  <ion-row>
+    <ion-col size="12" style="text-align: center;padding:1em;height: 20vh;display:flex;align-items: center;justify-content: center;">
+      <img src="assets/img/logo-white.png" style="max-width: 25vw;margin:auto;">
+    </ion-col>
+  </ion-row>
+  <ion-row>
+    <ion-col size="12" style="text-align: center;padding:1em;background-color: white;" >
+      <img src="assets/img/logo-cliente.png" style="max-width: 25vw;margin:auto;">
+    </ion-col>
+  </ion-row>
+
+  <ion-row>
+    <ion-col size="12"> 
+        <p class='descricao'>Seja <span class="bold">bem-vindo</span>,<br /><br />
+          Revitalize seu cotidiano escolar com o aplicativo <span class="bold">Sábio</span>! 
+          <br /><br />
+          Facilidade e inovação ao alcance dos seus dedos.</p> 
+    </ion-col>
+  </ion-row>
+  </div>
+</ion-content>
+
+<ion-footer  >
+  <ion-toolbar #footer > 
+	    <ion-button   color="primary" (click)="entrar()"  >
+	      Entrar
+	    </ion-button> 
+  </ion-toolbar>
+</ion-footer> -->
+
+<ion-content>
+  <div id="bg"></div>
+  <div class="logo-container">
+    <img src="assets/img/logo-mini.png" alt="Logo">
+  </div>
+  
+  <div class="floating-images">
+    <div class="image-circle" *ngFor="let image of images; let i = index" [ngStyle]="{'top': image.top, 'left': image.left, 'width': image.size, 'height': image.size}">
+      <img [src]="image.src" alt="Image description">
+    </div>
+  </div>
+
+  <div class="login-section">
+    <div id="logo-cliente">
+      <img src="assets/img/logo-cliente.png">
+    </div>
+    
+    <h1>Vamos começar!</h1>
+    <p>Revitalize seu cotidiano escolar com o aplicativo <span class="bold">Sábio</span>! <br /><br />
+      Facilidade e inovação ao alcance dos seus dedos.</p> 
+    <ion-button (click)="entrar()"  expand="block" color="dark">Iniciar sessão</ion-button>
+  </div>
+</ion-content>

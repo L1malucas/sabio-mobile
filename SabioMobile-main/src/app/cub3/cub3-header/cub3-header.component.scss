@@ -1,0 +1,176 @@
+
+
+ion-title {
+
+    font-size: 1.5em;
+    font-family: 'Futura PT', 'Eina', 'Avenir Next', sans-serif;
+    color: #454b56; 
+
+        .titulo-perfil { 
+            max-width: 100%;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            font-weight: bold;
+            display: block;
+                    }
+    &:not(.mini){
+        width: 100vw;
+        position: absolute;
+        left: 10px;
+        margin-top: 35px;
+        text-align: left !important;
+        ion-avatar {
+        	background: #eee;
+		    max-height: 58px;
+		    max-width: 58px;
+        }
+        #texto {
+	        display: none;
+	        // transform: translateX(100%); 
+            max-width: 100%;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: nowrap; 
+            letter-spacing: -.8px;
+        }
+        .col-icone {
+    	    display: flex;
+		    justify-content: center;
+		    align-items: center;
+		    ion-icon {
+		    	color: white;
+		    	font-size: 1.5em;
+		    }
+        }
+    }
+}
+
+ion-toolbar { 
+    .buttons { 
+            --color: var(--ion-color-primary);
+        }
+        ion-icon {
+            --color: var(--ion-color-warning);
+            color: var(--ion-color-warning);
+        } 
+        &.mini {
+            --padding-top:30px; 
+        --padding-bottom:10px;
+            --min-height: 60px;
+        }
+    &:not(.mini){
+        --min-height:120px;
+        --padding-bottom:120px;
+        --padding-top:15px; 
+        --color: var(--ion-color-primary) !important;
+        color: var(--ion-color-primary) !important;
+        .buttons {
+            margin-top:-30px !important;
+        }
+    }
+	&.bgTransparente {
+		.buttons {
+
+				--color: white;
+			}
+			ion-icon {
+				--color: white !important;
+				color: white !important;
+			} 
+			&.mini {
+				--padding-top:30px; 
+			--padding-bottom:10px;
+				--min-height: 60px;
+			}
+		&:not(.mini){
+			--min-height:120px;
+			--padding-bottom:120px;
+			--padding-top:15px; 
+			--color: white !important;
+			color: white !important;
+			.buttons {
+				margin-top:-30px !important;
+			}
+		}
+	} 
+} 
+.justify-left {
+    justify-content: left !important;
+}
+ion-header {
+  &:after {
+    display: none;
+    visibility: hidden;
+  }
+}
+
+ion-header{
+    	&:before {
+    		width: 100%;
+    		height: 100%;
+    		display: block;
+    		content: '';
+    		position: absolute;
+    		left: 0;
+    		top: 0;
+    		opacity: .2;
+		    background-size: cover;
+		    background-position: center;
+		    z-index: 0;
+    	}
+    	#divisor {
+    		width: 100%;
+    		height: 15px;
+    		display: block;
+    		content: '';
+    		position: absolute;
+    		left: 0;
+    		bottom: -1px;
+    		background: #fff;
+		    z-index: 0;
+    		border-radius: 35px 35px 0 0;
+    	}
+		background-color: #ffffff;
+		&.bgTransparente {
+		  background-color: transparent !important;
+
+		}
+		&.bgTurma {
+
+			background: url('/assets/img/bg-turma.jpg');
+			background-size: cover;
+		}
+		// &.verde {
+		// 	// background: var(--ion-color-verde);
+		// 	background: var(--ion-color-verde);
+		// 	background: linear-gradient(135deg,  var(--ion-color-verde) 0%,var(--ion-color-verdeescuro) 99%);
+
+
+		// 	&:before {
+
+		//     background-image: url(/assets/img/bg-login.png);
+		// 	}
+		// }
+		// &.azul {
+		// 	background: var(--ion-color-azul);
+		// 	background: linear-gradient(135deg,  var(--ion-color-azul) 0%,var(--ion-color-azulescuro) 99%);
+		// 	&:before {
+		//     	background-image: url(/assets/img/bg-aluno.png);
+		// 	}
+		// }
+		// &.amarelo {
+		// 	background: var(--ion-color-amarelo);
+		// 	background: linear-gradient(135deg,  var(--ion-color-amarelo) 0%,var(--ion-color-amareloescuro) 99%);
+		// 	&:before {
+		//     	background-image: url(/assets/img/bg-coordenador.png);
+		// 	}
+		// }
+		// &.rosa {
+		// 	background: var(--ion-color-rosa);
+		// 	background: linear-gradient(135deg,  var(--ion-color-rosa) 0%,var(--ion-color-rosaescuro) 99%);
+		// 	&:before {
+		//     	background-image: url(/assets/img/bg-motorista.png);
+   		// 		background-position: right;
+		// 	}
+		// }
+	}

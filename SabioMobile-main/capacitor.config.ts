@@ -1,0 +1,47 @@
+import { CapacitorConfig } from '@capacitor/cli';
+
+const config: CapacitorConfig = {
+  appId: 'com.cub3.supernutre',
+  appName: 'Sábio',
+  webDir: 'www',
+  bundledWebRuntime: false,
+  server: {
+    cleartext: true
+  },
+  plugins: {
+    CapacitorSQLite: {
+      iosDatabaseLocation: 'Library/CapacitorDatabase',
+      iosIsEncryption: true,
+      iosKeychainPrefix: 'angular-sqlite-app-starter',
+      iosBiometric: {
+        biometricAuth: false,
+        biometricTitle : "Biometric login for capacitor sqlite"
+      },
+      androidIsEncryption: true,
+      androidBiometric: {
+        biometricAuth : false,
+        biometricTitle : "Biometric login for capacitor sqlite",
+        biometricSubTitle : "Log in using your biometric"
+      },
+      electronIsEncryption: true,
+      electronWindowsLocation: "C:\\ProgramData\\CapacitorDatabases",
+      electronMacLocation: "/Volumes/Development_Lacie/Development/Databases",
+      electronLinuxLocation: "Databases"
+    }
+  },
+  cordova: {
+    preferences: {
+      ScrollEnabled: 'false',
+      'android-minSdkVersion': '20',
+      'android-targetSdkVersion': '34',
+      BackupWebStorage: 'none',
+      SplashMaintainAspectRatio: 'true',
+      FadeSplashScreenDuration: '300',
+      SplashShowOnlyFirstTime: 'false',
+      SplashScreen: 'screen',
+      SplashScreenDelay: '3000'
+    }
+  }
+};
+
+export default config;

@@ -1,0 +1,19 @@
+#container {
+    margin: 20px;
+    background: #fafafa;
+    padding: 20px 10px;
+    border-radius: 15px;
+	ion-label {
+
+    clear: both;
+    width: 100%;
+    display: block;
+    text-align: center;
+	}
+	ion-button { 
+	    margin: auto;
+	    display: block;
+	    position: relative;
+	    width: auto;
+	}
+}

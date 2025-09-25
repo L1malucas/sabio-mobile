@@ -1,0 +1,159 @@
+<cub3-header [titulo]="'Gerenciamento de<br /> <b>Quizzes</b>'" [voltar]="true" [icone]="'document-outline'" [exibirAvatar]="false"></cub3-header>
+<ion-content>
+<div id="container">        
+    <ion-segment  value="informacoes" scrollable="true" [(ngModel)]="abaAtiva">
+      <ion-segment-button value="informacoes">
+        <ion-label><ion-icon name="information-outline"></ion-icon> Informações</ion-label>
+      </ion-segment-button>
+      <ion-segment-button value="perguntas">
+        <ion-label><ion-icon name="checkbox-outline"></ion-icon> Perguntas</ion-label>
+      </ion-segment-button>
+    </ion-segment>
+    <br />
+    <ng-container [ngSwitch]="abaAtiva">
+      <ng-container *ngSwitchCase="'informacoes'"> 
+          <ion-row>
+            <ion-col>
+              <h4 class="header4"><b>Informações sobre o quiz</b><br /><small>Preencha abaixo as informações e detalhes sobre o quiz:</small></h4>
+              
+            </ion-col>
+          </ion-row> 
+    <ion-card > 
+      <ion-card-content> 
+        <ion-list>
+            <ion-item lines="none">
+            <ion-title><ion-icon name="book-outline"></ion-icon> Detalhes</ion-title>
+            </ion-item>
+            <ion-item>
+            <ion-label position="floating" ><ion-icon name="book-outline"></ion-icon> Título do quiz *</ion-label>
+            <ion-input name="titulo" [(ngModel)]="dados.titulo" [placeholder]="'Insira um título'"></ion-input>
+          </ion-item>
+        </ion-list>
+            <ion-title><ion-icon name="pencil-outline"></ion-icon> Descrição do quiz</ion-title>
+          <ion-list>
+            <ion-item class="box-conteudo">
+                <editor no-blur [(ngModel)]="dados.descricao" [init]="editorOptions" ></editor>
+              </ion-item>
+          </ion-list>
+      </ion-card-content>
+    </ion-card>
+  </ng-container>
+
+      <ng-container *ngSwitchCase="'perguntas'"> 
+              <ion-row>
+                <ion-col>
+                  <ion-item lines="none">
+                  <h4 class="header4"><b>Perguntas do quiz</b><br /><small>Adicione perguntas e arraste-as para os lados ou clique na paginação para navegar entre os itens:</small></h4>      
+
+                        <ion-button  size='default' color='warning' slot='end' (click)="addPergunta(sliderQuiz)" >
+                          <ion-icon name="add-circle-outline"></ion-icon> Nova pergunta
+                        </ion-button>
+                        </ion-item>            
+                </ion-col>
+              </ion-row> 
+
+            <ion-slides #sliderQuiz pager="true" [options]="{initialSlide: 0, speed: 400}">
+              <ng-container *ngFor="let pergunta of dados.perguntas; let i = index">
+              <ion-slide  *ngIf="!carregando && pergunta.status != 'EXCLUIDO'">
+        <ion-card> 
+          <ion-card-content> 
+            <ion-list>
+              <ion-item lines="none">
+                <ion-title>
+                  <ion-icon name="book-outline"></ion-icon> Pergunta {{i+1}}
+                </ion-title>
+                        <ion-button  size='default' color='danger' fill="outline" slot='end' (click)="delPergunta(pergunta)">
+                          <ion-icon   name="trash-bin-outline"  color='danger'></ion-icon> Excluir
+                        </ion-button>
+              </ion-item>
+
+            <ion-item>
+            <ion-label position="floating" ><ion-icon name="book-outline"></ion-icon> Título da pergunta *</ion-label>
+            <ion-input name="titulo-pergunta" [(ngModel)]="pergunta.titulo" [placeholder]="'Insira um título'"></ion-input>
+          </ion-item>
+        </ion-list>
+            <ion-title><ion-icon name="pencil-outline"></ion-icon> Descrição</ion-title>
+          <ion-list>
+            <ion-item class="box-conteudo">
+                <editor no-blur [(ngModel)]="pergunta.descricao" [init]="editorOptions" ></editor>
+              </ion-item>
+          </ion-list>
+          <ng-container >
+            <ion-item >
+              <ion-label position="floating" >
+                <ion-icon name="book-outline"></ion-icon> Tipo de pergunta *
+              </ion-label>
+           
+              <ion-select [interface]="'popover'" (ionChange)="montarOpcoes(pergunta)" [cancelText]="'Cancelar'" placeholder="Selecione um tipo de pergunta" [(ngModel)]="pergunta.tipo_pergunta" name="tipo_pergunta"  >
+                <ion-select-option  [value]="1">Opção única</ion-select-option> 
+                <ion-select-option  [value]="2">Múltipla escolha</ion-select-option> 
+              </ion-select>
+            </ion-item>  
+
+            <ion-item *ngIf="pergunta.tipo_pergunta == 1 || pergunta.tipo_pergunta == 2">
+              <ion-label position="floating" >
+                <ion-icon name="book-outline"></ion-icon> {{pergunta.tipo_pergunta == 1 ? 'Opção correta' : 'Opções corretas'}} *
+              </ion-label>
+           
+              <ion-select [interface]="'popover'" [multiple]="pergunta.tipo_pergunta == 2"  [cancelText]="'Cancelar'" placeholder="Selecione..." [(ngModel)]="pergunta.opcao_correta" name="opcao_correta"  >
+                <ion-select-option *ngFor="let opt of pergunta.opcoes; let i = index; "  [value]="opt.ordem">Opção {{opt.ordem}}</ion-select-option>   
+              </ion-select>
+            </ion-item>  
+          </ng-container>
+          <ng-container *ngIf="pergunta.tipo_pergunta == 1"> 
+            <ion-list>
+              <ion-item lines="none">
+                <ion-title>
+                  <ion-icon name="book-outline"></ion-icon> Opções
+                </ion-title>
+                        <ion-button  size='default' color='success' fill="outline" slot='end' (click)="addOpcao(pergunta)">
+                          <ion-icon   name="add-outline"  color='success'></ion-icon> Nova opção
+                        </ion-button>
+              </ion-item>
+              <ng-container *ngFor='let opc of pergunta.opcoes; let i = index'>
+                <ion-item *ngIf="opc.status != 'EXCLUIDO'">
+                <ion-label position="floating" >Opção {{opc.ordem}}</ion-label>
+                <ion-input name="titulo-opc{{opc.id}}" [(ngModel)]="opc.valor" [placeholder]="'Insira um valor'"></ion-input>
+                          <ion-button  size='small' color='danger' fill="outline" slot='end' (click)="delOpcao(pergunta, opc)">
+                            <ion-icon style='margin: 0;font-size: 1em;' slot="icon-only"  name="trash-bin-outline"  color='danger'></ion-icon> 
+                          </ion-button>
+              </ion-item>
+            </ng-container>
+            </ion-list>
+          </ng-container>
+          <ng-container *ngIf="pergunta.tipo_pergunta == 2">
+            
+            <ion-list>
+              <ion-item lines="none">
+                <ion-title>
+                  <ion-icon name="book-outline"></ion-icon> Opções
+                </ion-title>
+                        <ion-button  size='default' color='success' fill="outline" slot='end' (click)="addOpcao(pergunta)">
+                          <ion-icon   name="add-outline"  color='success'></ion-icon> Nova opção
+                        </ion-button>
+              </ion-item>
+              <ng-container *ngFor='let opc of pergunta.opcoes; let i = index'>
+                <ion-item *ngIf="opc.status != 'EXCLUIDO'">
+                <ion-label position="floating" >Opção {{i+1}}</ion-label>
+                <ion-input name="titulo-opc{{opc.id}}" [(ngModel)]="opc.valor" [placeholder]="'Insira um valor'"></ion-input>
+                          <ion-button  size='small' color='danger' fill="outline" slot='end' (click)="delOpcao(pergunta, opc)">
+                            <ion-icon style='margin: 0;font-size: 1em;' slot="icon-only"  name="trash-bin-outline"  color='danger'></ion-icon> 
+                          </ion-button>
+              </ion-item>
+            </ng-container>
+            </ion-list>
+          </ng-container>
+      </ion-card-content>
+    </ion-card>
+  </ion-slide>
+</ng-container>
+</ion-slides>
+</ng-container>
+  </ng-container>
+</div>
+  <ion-fab vertical="bottom" horizontal="end" slot="fixed">
+    <ion-fab-button (click)="salvarQuiz()" color="success">
+      <ion-icon name="checkmark-outline"></ion-icon>
+    </ion-fab-button>
+  </ion-fab>
+</ion-content>

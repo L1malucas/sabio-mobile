@@ -1,0 +1,329 @@
+#container {
+	padding: 0;
+}
+
+#btnRegistro {
+
+    color: #797979;
+    --background: #fbfbfb;
+    margin: auto;
+    display: block;
+    font-weight: bold;
+    letter-spacing: -0.4px;
+    height: 50px;
+    --border-radius: 40px;
+
+    .btnIcone { 
+	    display: flex;
+	    position: absolute;
+	    right: -15px;
+	    background: white;
+	    height: 100%;
+	    width: 60px;
+	    color: var(--ion-color-verde);
+	    justify-content: center;
+	    align-items: center;
+	    font-size: 1.5em;
+	    border-radius: 40px;
+    }
+
+}
+
+#registroJornada {
+	background: #fafafa;
+    border-radius: 25px;
+    font-size: .9em;
+    position: relative;
+    padding: 10px; 
+    margin: 10px 30px;
+    border: 1px solid #ededed;
+    box-shadow: 0px 5px 10px 0px rgba(214, 214, 214, 0);
+    cursor: pointer;
+    &:hover {
+      opacity: .8;
+    }
+    img {
+      max-width: 40px;
+    }
+    ion-icon {
+    	color: var(--ion-color-verde);
+    	font-size: 2em;
+    }
+    .col-icon {
+	    display: flex;
+	    justify-content: center;
+	    align-items: center;
+    }
+}
+
+h4 {
+	padding: 0 .5em;
+}
+ion-card {
+  ion-card-title {
+    font-size: 1.2em;
+    text-align: left;
+    width: 100%;
+    white-space: normal;
+    text-overflow: ellipsis;
+    overflow: hidden;
+    font-weight: 700;
+    color: var(--ion-color-primary);
+  }
+  ion-card-subtitle {
+    text-align: left;
+  }
+}
+.turmasLista {
+
+	height: 170px;
+	padding: 10px;
+	.card {
+	    color: white;
+	    font-weight: bold;
+	    max-width: 150px;
+	    height: 150px;
+	    margin: 0 10px;
+	    padding: 40px;
+	    overflow: hidden;
+	    border-radius: 30px;
+	    position: relative;
+	    min-width: 165px;
+    h3 {
+	    position: absolute;
+	    bottom: 0px;
+	    left: 0px;
+	    padding: 20px;
+      font-size: 1em;
+    }
+    	&:before {
+    		width: 100%;
+    		height: 100%;
+    		display: block;
+    		content: '';
+    		position: absolute;
+    		left: 0;
+    		top: 0;
+    		opacity: .2;
+		    background-size: cover;
+		    background-position: center;
+    	} 
+		&.azul {
+			background: var(--ion-color-azul);
+			background: linear-gradient(135deg,  var(--ion-color-azul) 0%,var(--ion-color-azulescuro) 99%);
+			box-shadow:         0px 0px 14px 0px rgba(52, 163, 255, 0.41);
+			&:before {
+		    	background-image: url(/assets/img/bg-aluno.png);
+			}
+		} 
+	}
+}
+.fixed[scrollx=true], div[scrolly=true] {
+  position: relative;
+  overflow: hidden;
+
+  ::-webkit-scrollbar {
+    display: none;
+  }
+}
+
+.fixed[scrollx=true] {
+  overflow-x: auto;
+}
+
+.fixed[scrolly=true] {
+  overflow-y: auto;
+}
+
+
+div[scrollx=true] {
+  display: flex;
+  flex-wrap: nowrap;
+  overflow-x: auto;
+  &::-webkit-scrollbar {
+     display: none;
+  }
+   .scroll-item {
+     flex: 0 0 auto;
+  }
+}
+
+
+        .turmaId {
+                background: #eee;
+    border-radius: 5px;
+    text-align: center;
+    font-size: 10px;
+    display: flex;
+    flex-direction: column;
+    vertical-align: middle;
+    align-items: center;
+    justify-content: center;
+    text-overflow: ellipsis;
+    overflow:hidden; 
+    }
+
+   .follow-list { 
+        background-color:#fff;
+        p.turmaDias {
+    overflow: auto !important;
+    text-overflow: initial !important;
+    white-space: normal !important;
+    font-size: 11px;
+        }   
+    }
+
+    .scroll-zoom-wrapper {
+        white-space: nowrap;
+    }
+
+    ion-card {
+        width: 500px !important;
+        display: inline-block;
+    }
+
+    ion-scroll {
+        min-height: 160px; 
+        height: auto;
+
+            .scroll-content {
+            padding: 0px !important;
+        }    
+    }
+
+    .educards {
+
+    overflow-y: hidden;
+    height: 52vh;
+    width: 100%;  
+  padding: 10px;
+  ion-list {
+
+    max-height: 100%;
+    overflow: scroll;
+  }
+  .icone-card {
+    width: 50px;
+  }
+  .card {
+      color: white;
+      font-weight: bold; 
+      cursor: pointer;
+      background: #fff;
+      border: 3px solid #eee;
+      margin: 0 10px;
+      padding: 20px;
+      overflow: hidden;
+      border-radius: 30px;
+      position: relative;
+      height: 50vh;
+      width: 40vw;
+      max-width: 300px; 
+      min-width: 280px;
+
+      h1 {
+        font-weight: bold;
+        color: black;
+        cursor: pointer;
+        &:hover {
+          color: var(--ion-color-primary);
+        }
+      }
+      h2 { 
+        font-size: .9em;
+        letter-spacing: -.4px;
+        margin: 0;
+        padding: 0;
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+      }
+    h3 {
+      position: absolute;
+      bottom: 0px;
+      left: 0px;
+      padding: 20px;
+      font-size: 1em;
+    }
+    ion-list {
+        --background: transparent;
+        background: transparent;
+      ion-item {
+        --background: #f7f7f7;
+        margin: 5px 0;
+        /* border-left: 3px solid var(--ion-color-primary); */
+        border-radius: 10px;
+        border-left: 3px solid var(--ion-color-primary);
+      }
+    }  
+  }
+}
+.slide-avulso {
+
+    background: #f8f8f8;
+    border-radius: 20px;
+    margin: 10px;
+    box-shadow: 0 -8px 15px -15px rgb(0 0 0 / 40%);
+    .icone-slide {
+      width: 100px;
+    }
+    span {
+        font-weight: bold;
+        letter-spacing: -.8px;
+        clear: bth;
+        display: block;
+        font-size: .9em;
+    }
+}
+
+.item-vazio {
+
+    border-color: red !important;
+    --background: #fff !important;
+    text-align: center;
+    justify-content: center;
+    align-items: center;
+    display: flex;
+}
+.swiper-pagination {
+  bottom: -40px! important;
+}
+ion-slide {
+  padding: 0 0 20px 0;
+}
+.banner { 
+  background: #000;
+  margin: 10px;
+  border-radius: 15px;
+  color: white;
+  background-size:cover;
+  background-position: center;
+  padding: 1em 1.5em 2em 1.5em;
+  h1, p {
+    text-align: left !important;
+    padding:0;
+    margin:0;
+  }
+  h1 {
+    font-size: 1em;
+    font-weight: 700;
+    &:before {
+      content: ' ';
+      display: block;
+      width: 60%;
+      height: 5px;
+      border-radius: 10px;
+      background: #00ffc0;
+      margin: 10px 0;
+    }
+  }
+  p {
+    font-size: .6em;
+  }
+}
+.card-aluno {
+  display: flex;
+  justify-content: center;
+  flex-direction: column;
+  align-items: center;
+}

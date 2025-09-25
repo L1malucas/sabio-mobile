@@ -1,0 +1,53 @@
+ <cub3-header [titulo]="'Atividades da <br /> <b>Plataforma</b>'" [voltar]="true" [icone]="'bookmarks-outline'" [exibirAvatar]="false"></cub3-header>
+
+<ion-content>
+ <div id="container">
+        <ion-row>
+          <ion-col>
+            <h4 class="header4">Lista de <b>atividades</b></h4>
+          </ion-col>
+      </ion-row> 
+      <ion-list class="listOpcoes" *ngIf="atividades">
+	  		<ion-item *ngIf="atividades != undefined || (atividades != undefined && atividades.length > 0)">
+	  			<ion-row>
+	  				<ion-col size="4">
+	  					<b>Título</b>
+	  				</ion-col>
+	  				<ion-col size="4">
+	  					<b>Data</b>
+	  				</ion-col> 
+	  			</ion-row>
+	  		</ion-item>
+	  		<ng-container *ngFor="let atividade of atividades; let i = index" >
+	          <ion-item lines="{{i == atividades.length-1 ? 'none' : ''}}">
+					<ion-row>
+						<ion-col size="4">
+							{{atividade.titulo}}
+						</ion-col>
+						<ion-col size="4">
+							{{atividade.horario_criacao | amDateFormat: 'DD/MM/YYYY'}}
+						</ion-col>
+						<ion-col size="2">
+	                        <ion-button  size='small' color='warning'  [routerLink]="['/app/academico/academico-atividade-editar/'+atividade.id]">
+	                          <ion-icon style='font-size: 1em;margin-right:0px;' slot="icon-only"  name="create-outline" color="dark"></ion-icon>
+	                        </ion-button>
+						</ion-col>
+						<ion-col size="2">
+                        <ion-button  size='small' color='danger' (click)="remover(atividade)">
+                          <ion-icon style='font-size: 1em;margin-right:0px;' slot="icon-only"  name="trash-bin-outline"  color='light'></ion-icon>
+                        </ion-button>
+						</ion-col>
+					</ion-row>
+	          </ion-item>
+	      </ng-container>
+          <ion-item  lines="none" *ngIf="atividades.length == 0">
+            <p style="text-align:center">Nenhuma atividade disponível...</p>
+          </ion-item>
+      </ion-list>
+  </div>
+  <ion-fab vertical="bottom" horizontal="end" slot="fixed">
+    <ion-fab-button [routerLink]="['/app/academico/academico-atividade-novo/']" color="danger">
+      <ion-icon name="add-circle-outline"></ion-icon>
+    </ion-fab-button>
+  </ion-fab>
+</ion-content>

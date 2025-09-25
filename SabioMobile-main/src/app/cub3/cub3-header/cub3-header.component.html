@@ -1,0 +1,22 @@
+ 
+	<ion-header class="{{getClasse() + ' ' + getClasseF()}}" no-border *ngIf="getUsuario()">
+		<ion-toolbar color="{{color}} {{getClasseF()}}" [ngClass]="{'mini': mini}">
+		  <ion-buttons slot="start">
+			<ion-button *ngIf='!voltar' [routerLink]="['/app/ajustes']">
+			  <img src="assets/img/logo-mini.png" style="height:100%;">
+			</ion-button>
+			<ion-button *ngIf='voltar' (click)="voltarRota()" style="font-size: 30px; color: {{getCorBtn()}};">
+			  <ion-icon  style="font-size: 30px; color: {{getCorBtn()}};" name="chevron-back-outline"></ion-icon> <span *ngIf="exibirVoltarLabel">Voltar</span>
+			</ion-button>
+		  </ion-buttons>
+	  
+		  <img *ngIf="isCurrentRoute('/app/home/academico/academico-abas')" src="assets/img/logo-cliente-horizontal.png" style="height:100%;display:block;margin:auto; max-height:50px;">
+		  <ion-buttons slot="end">
+			<ion-button *ngIf="exibirNotificacoes" [routerLink]="['/app/notificacoes']" icon-only="true">
+			  <ion-icon name="notifications-outline" style="font-size: 30px; color: {{getCorBtn()}};"></ion-icon>
+			</ion-button>
+		  </ion-buttons>
+  </ion-toolbar>
+<ng-content></ng-content>
+<div id="divisor" *ngIf="exibirDivisor"></div>
+</ion-header>

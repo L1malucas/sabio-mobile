@@ -1,0 +1,449 @@
+ion-content {
+    --background: #ffffff;
+	&.verde {
+		--background: var(--ion-color-verde); 
+	}
+	&.azul {
+		--background: var(--ion-color-azul); 
+	}
+	&.amarelo {
+		--background: var(--ion-color-amarelo); 
+	}
+	&.rosa {
+		--background: var(--ion-color-rosa); 
+	}
+}
+
+
+#logo {
+
+    max-width: 250px;
+    margin: 20px auto;
+    display: block;
+}
+h2 {
+	font-family: 'Futura PT', sans-serif;
+    letter-spacing: -.5px;
+    color: #ffffff;
+    font-size: 2.2em;
+    line-height: 28px;
+    padding: 50px 20px;
+    text-align: center;
+    width: 100%;
+
+    b {
+    	color: var(--ion-color-verde)
+    }
+}
+ion-header {
+
+	&:after {
+		display: none;
+	}
+}
+
+ion-toolbar {  
+	--border-width: 0 !important;
+	&:after {
+		display: none;
+	}
+}
+.descricao {
+
+    text-align: center;
+    color: #ffffff;
+    font-weight: 400;
+
+}
+
+.loginLista {
+
+	min-height: 35vh;
+	padding: 10px;
+	.card {
+    color: white;
+	width: 100%;
+    cursor: pointer;
+    &:hover {
+    	opacity: .8;
+    }
+    font-weight: bold; 
+    max-width: 100%; 
+    height: 15vh;
+	min-height: 150px;
+    margin: 0 10px 20px 0;
+    padding: 40px;
+	overflow: hidden;
+    border-radius: 30px;
+	border:1px solid #FFFFFF;
+    position: relative;
+    min-width: 180px; 
+
+    h3 {
+	    position: absolute;
+	    bottom: 0px;
+	    left: 0px;
+	    padding: 20px;
+    }
+    	&:before {
+    		width: 100%;
+    		height: 100%;
+    cursor: pointer;
+    		display: block;
+    		content: '';
+    		position: absolute;
+    		left: 0;
+    		top: 0;
+    		opacity: .2;
+		    background-size: 100%;
+		    background-position: center;
+    	}
+		&.verde {
+			// background: var(--ion-color-verde);
+			background: white;
+			// background: linear-gradient(135deg,  var(--ion-color-verde) 0%,var(--ion-color-verdeescuro) 99%);
+
+			h3 { 
+
+				color: var(--ion-color-verde);
+			}
+			&:before {
+
+			box-shadow:         0px 0px 14px 0px rgba(69, 196, 197, 0.41);
+		    background-image: url(/assets/img/bg-login.png);
+			}
+		}
+		&.azul {
+			background: white;
+			h3 {
+				color: var(--ion-color-azulescuro);
+			}
+			// background: linear-gradient(135deg,  var(--ion-color-azul) 0%,var(--ion-color-azulescuro) 99%);
+			box-shadow:         0px 0px 14px 0px rgba(52, 163, 255, 0.41);
+			&:before {
+		    	background-image: url(/assets/img/bg-aluno.png);
+			}
+		}
+		&.amarelo {
+			background: var(--ion-color-amarelo);
+			background: linear-gradient(135deg,  var(--ion-color-amarelo) 0%,var(--ion-color-amareloescuro) 99%);
+			box-shadow:         0px 0px 14px 0px rgba(255, 194, 82, 0.41);
+			&:before {
+		    	background-image: url(/assets/img/bg-coordenador.png);
+			}
+		}
+		&.rosa {
+			background: var(--ion-color-rosa);
+			background: linear-gradient(135deg,  var(--ion-color-rosa) 0%,var(--ion-color-rosaescuro) 99%);
+			box-shadow:         0px 0px 14px 0px rgba(50, 50, 50, 0.41);
+			&:before {
+		    	background-image: url(/assets/img/bg-motorista.png);
+   				background-position: right;
+			}
+		}
+	}
+}
+.fixed[scrollx=true], div[scrolly=true] {
+  position: relative;
+  overflow: hidden;
+
+  ::-webkit-scrollbar {
+    display: none;
+  }
+}
+
+.fixed[scrollx=true] {
+  overflow-x: auto;
+}
+
+.fixed[scrolly=true] {
+  overflow-y: auto;
+}
+
+
+div[scrollx=true] {
+  display: flex;
+  flex-wrap: nowrap;
+  overflow-x: auto;
+  &::-webkit-scrollbar {
+     display: none;
+  }
+   .scroll-item {
+     flex: 0 0 auto;
+  }
+}
+#bg-login2 {
+
+    height: 100vh;
+    width: 100vw;
+    position: fixed;
+    top: 0px;
+    left: 0px;
+    background-image: url(/assets/img/bg-login2.JPG);
+    background-position: center center;
+    background-size: cover;
+    background-repeat: no-repeat;
+    opacity: 1;
+
+}
+
+#bg-login {
+	height: 20vh;
+    width: 100%;
+    position: fixed;
+    bottom: 0px;
+    left: 0px;
+    background-image: url("/assets/img/bg-fundo.png");
+    background-position: top;
+    background-size: 100% 20vh;
+    background-repeat: no-repeat;
+    opacity: .8;
+}
+#modalLogin {
+	min-height: 100vh;
+	width: 100%;
+	display: none;
+    transform: translateY(150%);
+    	&:before {
+    		width: 100%;
+    		height: 100%;
+    		display: block;
+    		content: '';
+    		position: fixed;
+    		left: 0;
+    		top: 0;
+    		opacity: .2;
+		    background-size: cover;
+		    background-position: center;
+		    z-index: 0;
+    	}
+
+    	h3 {
+    		padding: 0 1em;
+			font-size:1em;
+    	}
+	form {
+	    background: #fff;
+	    max-width: 90vw;
+	    margin: 5px auto;
+	    padding: 10px;
+	    border-radius: 15px;
+	    z-index: 1;
+	    position: relative;
+	    p {
+		    text-align: center;
+		    font-size: .8em;
+	    }
+	    ion-label {
+		    font-size: .8em;
+		    font-weight: bold;
+	    }
+		background-size: cover;
+	}
+		&.verde {
+			background: white;
+			// background: linear-gradient(135deg,  var(--ion-color-verde) 0%,var(--ion-color-verdeescuro) 99%);
+			// box-shadow:         0px 0px 14px 0px rgba(69, 196, 197, 0.41);
+			&:before {
+
+			// box-shadow:         0px 0px 14px 0px rgba(69, 196, 197, 0.41);
+		    background-image: url(/assets/img/bg-login.png);
+			}
+		}
+		&.azul {
+			background: white;
+			// background: linear-gradient(135deg,  var(--ion-color-azul) 0%,var(--ion-color-azulescuro) 99%);
+			// box-shadow:         0px 0px 14px 0px rgba(52, 163, 255, 0.41);
+			&:before {
+		    	background-image: url(/assets/img/bg-aluno.png);
+			}
+		}
+		&.amarelo {
+			background: var(--ion-color-amarelo);
+			background: linear-gradient(135deg,  var(--ion-color-amarelo) 0%,var(--ion-color-amareloescuro) 99%);
+			box-shadow:         0px 0px 14px 0px rgba(255, 194, 82, 0.41);
+			&:before {
+		    	background-image: url(/assets/img/bg-coordenador.png);
+			}
+		}
+		&.rosa {
+			h3 {
+				color: white;
+			}
+			background: var(--ion-color-rosa);
+			box-shadow:         0px 0px 14px 0px rgba(50, 50, 50, 0.41);
+			&:before {
+		    	background-image: url(/assets/img/bg-motorista.png);
+   				background-position: right;
+			}
+		}
+
+}
+
+#inicio, #inicio-desk {
+	height: 100vh;
+}
+
+ion-footer {
+	&:before {
+		display: none;
+		visibility: hidden;
+	}
+	ion-toolbar {
+		--background: transparent;
+		.toolbar-container {
+			--padding-top: 0;
+			--padding-bottom: 0;
+			--padding-start: 0;
+			--padding-end: 0;
+		}
+		ion-button {
+		    width: 100%;
+		    height: 56px;
+		    position: relative;
+		    display: block;
+		    margin: 0;
+		    border-radius: 0;
+	    	font-weight: bold; 
+
+		    &.azul {
+			    --ion-color-base: white !important;
+			    --ion-color-contrast: var(--ion-color-azul) !important;
+		    }
+		    &.rosa {
+			    --ion-color-base: white !important;
+			    --ion-color-contrast: var(--ion-color-rosa) !important;
+		    }
+		    &.verde {
+			    --ion-color-base: white !important;
+			    --ion-color-contrast: var(--ion-color-verde) !important;
+		    }
+		    &.amarelo {
+			    --ion-color-base: black !important;
+			    --ion-color-contrast: var(--ion-color-amarelo) !important;
+		    }
+		}
+	}
+}
+
+	
+	#desk-login {
+	    height: 100vh;
+	    top: 0;
+	    position: fixed;
+	    width: 100vw;
+	    left: 0;
+	    border-radius: 0;
+	    overflow: hidden;
+	}
+	#row-login {
+		height: 100%;
+		#col-box {
+		    // background: rgba(0,0,0,.3);
+		    backdrop-filter: blur(10px);
+		}
+		#col-login {
+		    justify-content: center;
+		    align-items: center;
+		    display: flex;
+		    background: #ffffff;
+		    backdrop-filter: blur(10px);
+		    max-height: 100%;
+		    form {
+		    	text-align: center;
+		    	max-height: 100%;
+		    	overflow-y: auto;
+		    	padding: 30px;
+		    	ion-label {
+		    		font-size: .8em;
+    				font-weight: bold;
+		    	}
+		    	p {
+    				background: #eee;
+				    padding: 15px 10px;
+				    border-radius: 10px;
+				    font-size: .8em;
+		    	}
+		    }
+		}
+	}
+#mobile-login {
+
+    height: 100vh;
+    // background: rgba(0, 0, 0, 0.3);
+    display: block;
+    width: 100%;
+    position: relative;
+    -webkit-backdrop-filter: blur(4px);
+    backdrop-filter: blur(7px);
+}
+@media screen and (min-width: 992px) {  
+	#mobile-login, ion-footer {
+		display: none;
+		visibility: hidden;
+	}
+	#bg-login3 {
+		display: none !important;
+	}
+}
+
+@media screen and (max-width: 992px) { 
+	#desk-login, #inicio-desk {
+		display: none;
+		visibility: hidden;		
+	}
+}
+
+.btn-login {
+	    font-weight: bold;
+    text-transform: initial;
+    width: 100%;
+    height: 50px;
+    --border-radius: 20px;
+}
+
+#bg-login3 {
+	  background-image: url(/assets/img/bg-login3.jpg);
+    background-position: center;
+    background-size: cover;
+    opacity: .4;
+    width: 100%;
+    height: 100%;
+    position: relative;
+    display: block;
+    z-index: 10;
+    content: '';
+    position: absolute;
+    left: 0;
+    top: 0;
+}
+#login-info {
+
+    z-index: 11;
+    position: absolute;
+    right: 10%;
+    display: flex;
+    justify-content: center;
+    align-items: end;
+    flex-direction: column;
+    top: 35%;
+    h1 {
+
+    background: var(--ion-color-primary);
+    padding: 10px 20px;
+    font-weight: bold;
+    color: white;
+    font-size: 3em;
+    }
+    h3 {
+    	background: black;
+    padding: 10px 20px;
+    font-weight: bold;
+    color: white;
+    font-size: 2em;
+    margin: 0;
+    span {
+    	color: white !important;
+    }
+    }
+}

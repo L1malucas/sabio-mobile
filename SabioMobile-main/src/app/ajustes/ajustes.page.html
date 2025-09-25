@@ -1,0 +1,21 @@
+ 
+<cub3-header [titulo]="cub3Svc.getAppName()+'<br /> <b>Ajustes</b>'" [voltar]="true" [icone]="'settings-outline'" [exibirAvatar]="false"></cub3-header>
+<ion-content>
+	<div id="container"> 
+	<ion-list class="listOpcoes">
+	  <ion-item (click)="apagarArquivos()" lines="none">
+	    <ion-label><b>Apagar arquivos</b><br /><small>Realiza a exclusão de arquivos de mídia baixados pelo aplicativo.</small></ion-label>
+	    <ion-icon name="trash-outline" slot="end"></ion-icon>
+	  </ion-item>
+	</ion-list>
+	<ion-list class="listOpcoes">
+	  <ion-item (click)="logout()" lines="none">
+	    <ion-label><b>Finalizar sessão</b><br /><small>Realiza logout e retorna para a tela de login.</small></ion-label>
+	    <ion-icon name="exit-outline" slot="end"></ion-icon>
+	  </ion-item>
+	</ion-list>
+	</div>
+</ion-content>
+<ion-footer>
+	<small><b>{{cub3Svc.getAppName()}}</b><br /> Versão {{versaoApp}}</small>
+</ion-footer>

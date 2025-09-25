@@ -1,0 +1,24 @@
+ <cub3-header [titulo]="'Etapas e<br /> <b>Séries</b>'" [voltar]="true" [icone]="'albums-outline'" [exibirAvatar]="false"></cub3-header>
+
+<ion-content>
+	<div id="container">
+        <ion-row>
+          <ion-col>
+            <h4 class="header4">Lista de <b>etapas e séries</b></h4>
+          </ion-col>
+        </ion-row>
+        <ion-list class="notify-list">
+          <!-- <ion-item *ngFor="let item of data.MOB_ETAPAS; let i = index" lines="{{i == data.MOB_ETAPAS.length-1 ? 'none' : ''}}">
+            <ion-row> 
+              <ion-col col-12>
+                <p>{{item.DES_ETAPA}}</p>
+              </ion-col>
+            </ion-row>
+          </ion-item> -->
+          <ion-item  lines="none" *ngIf="data.MOB_ETAPAS?.length == 0">
+            <p style="text-align:center">Nenhuma informação disponível...</p>
+          </ion-item>
+      </ion-list>
+	</div> 
+
+</ion-content>

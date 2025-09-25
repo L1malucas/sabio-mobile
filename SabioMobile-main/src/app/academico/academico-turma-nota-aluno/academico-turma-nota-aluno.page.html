@@ -1,0 +1,82 @@
+ <cub3-header [titulo]="'Nota <br /> <b>'+aluno.NME_ALUNO+'</b>'" [voltar]="true" [icone]="'bookmarks-outline'" [exibirAvatar]="false"></cub3-header>
+<ion-content> 
+	    <ion-row>
+	      <ion-col>
+	        <h4 class="header4">Lançamento de <b>avaliação</b></h4>
+	      </ion-col>
+	    </ion-row>
+  
+
+	    		<form name="frmNota">
+  <ion-card *ngIf="aluno != undefined && aluno != null" >
+    <ion-card-content *ngIf="aluno.NOTA"> 
+    	<ion-list>
+        <ion-item (click)="selecionarFaltas()">
+          <p><b>Faltas:</b> </p><ion-badge color="primary" slot="end">{{aluno.NOTA.FALTAS}}</ion-badge>
+        </ion-item>
+        <ion-item>
+          <p><b>Tipo de avaliação:</b></p> <ion-badge color="secondary" slot="end">{{aluno.NOTA.TIP_AVALIACAO == 'NOTA' ? 'Nota' : 'Conceito'}}</ion-badge>
+        </ion-item> 
+        <ion-item *ngIf="aluno.NOTA.TIP_AVALIACAO == 'NOTA'" (click)="selecionarNotas()">
+          <p><b>Nota:</b></p> <ion-badge color="secondary" slot="end">{{aluno.NOTA.NOTA}}</ion-badge>
+        </ion-item>
+    	</ion-list> <br />
+      <ion-row class="box-notas">
+        <ion-col *ngIf="aluno.NOTA.TIP_AVALIACAO == 'NOTA'" size="6">
+          <ion-button full color="secondary" (click)="selecionarNotas()">Alterar nota</ion-button>
+        </ion-col>
+        <ion-col size="6">
+          <ion-button full color="primary" (click)="selecionarFaltas()">Alterar faltas</ion-button>        
+        </ion-col>
+      </ion-row>
+	    	
+    </ion-card-content>
+  </ion-card>
+  	</form>
+
+    <ion-header>
+      <ion-toolbar>
+        <ion-title>
+          Rendimento do aluno
+        </ion-title> 
+      </ion-toolbar>
+    </ion-header>
+     
+      <ng-container  *ngFor="let disciplina of data.MOB_DISCIPLINAS">
+        <ion-list *ngIf="disciplina.IDF_DISCIPLINA == aluno.NOTA.IDF_DISCIPLINA">
+          <ion-card> 
+            <ion-card-content>
+              <ion-grid *ngIf="disciplina.rendimento && disciplina.rendimento.length > 0;else semRendimento">
+                <ion-row>
+                  <ion-col>
+                    <ion-label>Período - Média</ion-label>
+                  </ion-col>
+                  <!-- Add more columns as needed -->
+                </ion-row>
+                <ion-row *ngFor="let rendimento of disciplina.rendimento">
+                  <ion-col>
+                    <ion-label>{{(rendimento.DES_AVALIACAO)}}</ion-label>
+                  </ion-col>
+                  <ion-col>
+                    <ion-label>{{(rendimento.MEDIA_PERIODO) || '-'}}</ion-label>
+                  </ion-col>
+                </ion-row>
+              </ion-grid>
+              <ng-template #semRendimento>
+                Rendimento não disponível
+              </ng-template>
+            </ion-card-content>
+          </ion-card>
+        </ion-list>
+      
+      </ng-container> 
+
+</ion-content>
+
+<ion-footer  >
+  <ion-toolbar #footer > 
+	    <ion-button color="danger" (click)="salvar()">
+	      Confirmar
+	    </ion-button> 
+  </ion-toolbar>
+</ion-footer>

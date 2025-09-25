@@ -1,0 +1,8 @@
+{
+  "name": "educanetNovo",
+  "integrations": {
+    "cordova": {},
+    "capacitor": {}
+  },
+  "type": "angular"
+}

@@ -1,0 +1,18 @@
+ <cub3-header [titulo]="'Lista de<br /> <b>Turmas</b>'" [voltar]="true" [icone]="'bookmarks-outline'" [exibirAvatar]="false"></cub3-header>
+<ion-content>
+
+	<div id="container">
+        <ion-row>
+          <ion-col>
+            <h4 class="header4">Listagem de <b>turmas</b></h4>
+          </ion-col>
+        </ion-row>
+		<ion-list class="listOpcoes">
+		  <ion-item    class="ion-activatable ripple-parent" [routerLink]="['/app/academico/academico-turma/'+item.IDF_TURMA]" *ngFor="let item of data.MOB_TURMAS" >
+		    <ion-label><b>{{item.NME_TURMA}}</b> <ion-badge slot="end" color="secondary" style='float:right;font-size:.8em'>{{item.TURNO}}</ion-badge><br /><small><ng-container *ngIf="item.NME_ESCOLA">{{item.NME_ESCOLA}} - </ng-container></small></ion-label>
+		    <ion-icon name="school-outline" slot="end"></ion-icon>
+		    <ion-ripple-effect></ion-ripple-effect>
+		  </ion-item>
+		</ion-list>
+	</div>
+</ion-content>

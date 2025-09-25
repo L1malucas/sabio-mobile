@@ -1,0 +1,62 @@
+.saida {
+	b, ion-icon {
+		color: red;
+	}
+}
+
+.listOpcoes {
+	ion-row {
+		padding-left: 10px;
+		ion-label {
+			font-weight: bold;
+		}
+	}
+}
+ion-footer {
+	&:before {
+		display: none;
+		visibility: hidden;
+	}
+	ion-toolbar {
+		--background: transparent;
+		.toolbar-container {
+			--padding-top: 0;
+			--padding-bottom: 0;
+			--padding-start: 0;
+			--padding-end: 0;
+		}
+		ion-button {
+		    width: 100%;
+		    height: 56px;
+		    position: relative;
+		    display: block;
+		    margin: 0;
+		    border-radius: 0;
+	    	font-weight: bold; 
+
+		    &.azul {
+			    --ion-color-base: white !important;
+			    --ion-color-contrast: var(--ion-color-azul) !important;
+		    }
+		    &.rosa {
+			    --ion-color-base: white !important;
+			    --ion-color-contrast: var(--ion-color-rosa) !important;
+		    }
+		    &.verde {
+			    --ion-color-base: white !important;
+			    --ion-color-contrast: var(--ion-color-verde) !important;
+		    }
+		    &.amarelo {
+			    --ion-color-base: black !important;
+			    --ion-color-contrast: var(--ion-color-amarelo) !important;
+		    }
+		}
+	}
+}
+
+.tipo-E {
+	color: var(--ion-color-verde);
+}
+.tipo-S {
+	color: red;
+}

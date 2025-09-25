@@ -1,0 +1,31 @@
+<cub3-header [titulo]="'Novo <br /> <b>registro</b>'" [voltar]="true" [icone]="'bookmarks-outline'" [exibirAvatar]="false"></cub3-header>
+<ion-content> 
+        <ion-row>
+          <ion-col>
+            <h4 class="header4"> Formulário de novo registro de <b>acompanhamento</b></h4>
+          </ion-col>
+        </ion-row> 
+		<ion-card > 
+		  <ion-card-content> 
+		  		<ion-list>
+              <ion-item no-lines>
+                <ion-label position="floating" ><ion-icon name="calendar-outline"></ion-icon> Data *</ion-label>
+                <ion-datetime displayFormat="DD/MM/YYYY"   name="data" [(ngModel)]="dados.data" cancelText="Cancelar" doneText="Confirmar" [placeholder]="'Toque para selecionar'" ></ion-datetime>
+              </ion-item> 
+			        <ion-item>
+			        <ion-icon name="ios-chatboxes-outline"  item-left></ion-icon>
+			        <ion-textarea placeholder="Parecer/Detalhes ou observações do acompanhamento..." rows="4" required name="observacoes" [(ngModel)]="dados.observacoes" ></ion-textarea>
+			        </ion-item>
+		  		</ion-list>
+		  </ion-card-content>
+		</ion-card>  
+</ion-content>
+
+
+<ion-footer  >
+  <ion-toolbar #footer > 
+	    <ion-button color="danger" (click)="submit()" >
+	      Confirmar
+	    </ion-button> 
+  </ion-toolbar>
+</ion-footer>

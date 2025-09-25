@@ -1,0 +1,49 @@
+ <cub3-header [titulo]="'Visualizar <br /> <b>Evento</b>'" [voltar]="true" [icone]="'bookmarks-outline'" [exibirAvatar]="false"></cub3-header>
+<ion-content>
+
+	<div id="container">
+        <ion-row>
+          <ion-col>
+            <h4 class="header4">Detalhes do evento <b>#{{dados.IDF_OCORRENCIA}}/{{dados.IDF_OCORRENCIA_LOCAL}}</b></h4>
+          </ion-col>
+        </ion-row>
+		<ion-list >
+			<ng-container  >
+			  <ion-card    class="ion-activatable ripple-parent" *ngIf="dados.aluno" >
+			  	<ion-row>
+			  		<ion-col>
+				  		<ion-label>
+							<ion-badge slot="end" color="primary">
+							  {{dados.ANO_LETIVO}}
+						  </ion-badge>
+						  <b>{{cub3Svc.normalizeString(dados.aluno.nome)}}</b>
+							<!-- <br /><small>({{dados.aluno.LOC_DDD}}) {{dados.aluno.LOC_TEL1}}</small> -->
+	
+				  	</ion-label> 
+			  		</ion-col>
+			  	</ion-row>
+			  	<ion-row *ngIf="dados.aluno.nomeMae">
+			  		<ion-col>
+				  		<p><b>Nome da mãe</b><br />{{dados.aluno.nomeMae != 'undefined' ? dados.aluno.nomeMae : 'Sem informação'}}</p>
+			  		</ion-col>
+			  	</ion-row>
+			  	<ion-row>
+			  		<ion-col>
+				  		<p><b>Observações</b><br />{{dados.OBSERVACAO || 'Sem informação'}}</p>
+			  		</ion-col>
+			  	</ion-row>
+			  	<ion-row>
+			  		<ion-col>
+				  		<p><b>Texto</b><br />{{dados.TXT_OCORRENCIA || 'Sem informação'}}</p>
+			  		</ion-col>
+			  	</ion-row>
+			  	<ion-row>
+			  		<ion-col>
+				  		<p><b>Descrição</b><br />{{dados.DES_OCORRENCIA || 'Nenhuma descrição'}}</p>
+			  		</ion-col>
+			  	</ion-row>
+			  </ion-card>
+			</ng-container>
+		</ion-list>
+	</div>
+</ion-content>

@@ -1,0 +1,13 @@
+ion-footer {
+	&:before {
+		display: none;
+		visibility: hidden;
+	}
+	small {
+		text-align: center;
+		width: 100%;
+		padding: 20px;
+		opacity: .3;
+		display: block;
+	}
+}

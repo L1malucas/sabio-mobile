@@ -1,0 +1,128 @@
+ <cub3-header [titulo]="'Notas <br /> <b>'+turmaAtiva.NME_TURMA+'</b>'" [voltar]="true" [icone]="'bookmarks-outline'"
+ 	[exibirAvatar]="false"></cub3-header>
+
+ <ion-content>
+ 	<ion-row>
+ 		<ion-col>
+ 			<h4 class="header-4" style="padding-left:10px;">Notas {{turmaAtiva.titulo}} - {{getTituloAvaliacao()}}</h4>
+ 		</ion-col>
+ 	</ion-row>
+
+ 	<ng-container *ngIf="exibirFiltro">
+ 		<div class="box-filtro" *ngIf="dados.disciplina && dados.avaliacao">
+ 			<ion-button fill="outline" (click)="exibirFiltro = !exibirFiltro" color="danger" size="small"
+ 				class="btn-filtro">
+ 				<ion-icon name="filter-outline"></ion-icon> Ocultar filtro
+ 			</ion-button>
+ 		</div>
+ 		<ion-row>
+ 			<ion-col>
+ 				<h4 class="header4">Seleção da <b>disciplina</b></h4>
+ 			</ion-col>
+ 		</ion-row>
+
+ 		<ion-list class="notify-list">
+ 			<ion-item lines="none">
+ 				<ion-label>Disciplina</ion-label>
+ 				<ion-select [cancelText]="'Cancelar'" placeholder="Selecione..."
+ 					*ngIf="turmaAtiva.disciplinas && turmaAtiva.disciplinas.length > 0" [(ngModel)]="dados.disciplina"
+ 					(ionChange)="syncAvaliacoes()">
+ 					<ion-select-option *ngFor="let item of turmaAtiva.disciplinas" value="{{item.IDF_DISCIPLINA}}">
+ 						{{item.DES_DISCIPLINA}}</ion-select-option>
+ 				</ion-select>
+ 			</ion-item>
+ 		</ion-list>
+
+
+ 	</ng-container>
+ 	<div class="box-filtro" *ngIf="!exibirFiltro">
+ 		<ion-button fill="outline" (click)="exibirFiltro = !exibirFiltro" size="small" class="btn-filtro">
+ 			<ion-icon name="filter-outline"></ion-icon> Alterar filtro
+ 		</ion-button>
+ 	</div>
+ 	<!-- Avaliação -->
+
+
+ 	<!-- Alunos da turma -->
+ 	<ng-container *ngIf="dados.disciplina">
+
+ 		<ion-row>
+ 			<ion-col>
+ 				<h4 class="header4">Alunos da <b>turma</b> </h4>
+
+
+ 			</ion-col>
+ 		</ion-row>
+
+ 		<ng-container *ngIf="dados != null && !carregando">
+ 			<ion-searchbar showCancelButton="focus" placeholder="Buscar por nome ou matrícula..." [(ngModel)]="busca">
+ 			</ion-searchbar>
+ 			<ion-list class="alunos-lista listOpcoes">
+ 				<ng-container *ngFor="let item of ListarAlunos(); let i = index">
+ 					<ion-item *ngIf="item" style="margin-bottom:10px;">
+ 						<ion-grid>
+ 							<!-- Linha para avatar e informações do aluno -->
+ 							<ion-row>
+ 								<ion-col size="1">
+ 									<ion-avatar>
+ 										<img src="assets/img/avatar-{{ item.sexo == 2 ? 'menina' : 'menino' }}.jpg" />
+ 									</ion-avatar>
+ 								</ion-col>
+ 								<ion-col size="9">
+ 									<p class="turmaDias" style="position: relative;">
+ 										<b style="color:black">{{ cub3Svc.normalizeString(item.nomeCivil) }}</b>
+ 										<br /><b>{{ item.id }}</b>
+ 									</p>
+ 								</ion-col>
+								<ion-col size="2" style="display:flex;justify-content: center;align-items: center;">
+									<p style="text-align: center;"><b>Média:</b><br /> {{ (item.avaliacao.media || 0) | number: '1.2-2' }}</p>
+								</ion-col>
+ 							</ion-row>
+ 							<!-- Linha para as notas dinâmicas -->
+ 							<ion-row>
+ 								<ng-container *ngFor="let nota of item.avaliacao.NOTAS; let notaIndex = index">
+ 									<ion-col [size]="12 / numNotas">
+ 										<div style="display:flex; ">
+
+											<ion-item style="background:white; --inner-padding-start:0; --inner-padding-end:0; --inner-padding-top:0; --inner-padding-bottom:0;">
+												<ion-label position="stacked">{{notaIndex + 1}}ª nota</ion-label>
+											<ion-input
+											type="number" 
+											[placeholder]="'Nota'"
+											min="0"
+											max="10"
+											(ionChange)="atualizarNotaAluno(item, notaIndex, $event)"
+											[value]="item.avaliacao.NOTAS[notaIndex]?.valor"
+											name="nota_{{notaIndex}}"
+											style="width: 100%;  color:black; text-align: center;">
+										  </ion-input>
+										  </ion-item>
+										  
+ 											<!-- <ion-button
+                  fill="clear"
+                  size="small"
+                  color="danger"
+                  (click)="limparNota(item, notaIndex)"
+                  style="margin-right: 0;"
+                >
+                  <ion-icon name="close-circle" style="margin: 0;"></ion-icon>
+                </ion-button> -->
+ 										</div>
+ 									</ion-col>
+ 								</ng-container>
+ 							</ion-row>
+ 						</ion-grid>
+ 					</ion-item>
+ 				</ng-container>
+ 			</ion-list>
+
+
+
+
+ 		</ng-container>
+ 		<ion-spinner name="crescent" class="carregando" color="primary"
+ 			*ngIf="carregando != undefined && carregando == true"></ion-spinner>
+
+
+ 	</ng-container>
+ </ion-content>

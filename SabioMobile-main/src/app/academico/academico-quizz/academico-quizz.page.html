@@ -1,0 +1,53 @@
+<cub3-header [titulo]="'Gerenciamento de<br /> <b>Quizzes</b>'" [voltar]="true" [icone]="'document-outline'" [exibirAvatar]="false"></cub3-header>
+<ion-content>
+  <div id="container">
+    <ion-row>
+      <ion-col>
+        <h4 class="header4">Listagem de <b>quizzes</b></h4>
+      </ion-col>
+    </ion-row>
+
+      <ion-list class="listOpcoes" *ngIf="quizz">
+        <ion-item *ngIf="quizz != undefined || (quizz != undefined && quizz.length > 0)">
+          <ion-row>
+            <ion-col size="4">
+              <b>Título</b>
+            </ion-col>
+            <ion-col size="4">
+              <b>Data</b>
+            </ion-col> 
+          </ion-row>
+        </ion-item>
+        <ng-container *ngFor="let quiz of quizz; let i = index" >
+            <ion-item lines="{{i == quizz.length-1 ? 'none' : ''}}">
+          <ion-row>
+            <ion-col size="4">
+              {{quiz.titulo}}
+            </ion-col>
+            <ion-col size="4"> 
+              {{quiz.horario_criacao | amDateFormat: 'DD/MM/YYYY'}}
+            </ion-col>
+            <ion-col size="2">
+                          <ion-button  size='small' color='warning'  [routerLink]="['/app/academico/academico-quiz-editar/'+quiz.id]">
+                            <ion-icon style='font-size: 1em;' slot="icon-only"  name="create-outline" color="dark"></ion-icon> Editar
+                          </ion-button>
+            </ion-col>
+            <ion-col size="2">
+                        <ion-button  size='small' color='danger' (click)="remover(quiz)">
+                          <ion-icon style='font-size: 1em;' slot="icon-only"  name="trash-bin-outline"  color='light'></ion-icon> Excluir
+                        </ion-button>
+            </ion-col>
+          </ion-row>
+            </ion-item>
+        </ng-container>
+          <ion-item  lines="none" *ngIf="quizz.length == 0">
+            <p style="text-align:center">Nenhum quiz disponível...</p>
+          </ion-item>
+      </ion-list> 
+</div>
+  <ion-fab vertical="bottom" horizontal="end" slot="fixed">
+    <ion-fab-button [routerLink]="['/app/academico/academico-quiz-novo']" color="danger">
+      <ion-icon name="add-circle-outline"></ion-icon>
+    </ion-fab-button>
+  </ion-fab>
+</ion-content>

@@ -1,0 +1,100 @@
+
+
+<ion-content [fullscreen]="true"> 
+    <cub3-header [titulo]="'EducaNet<br /> <b>Sincronização</b>'" [icone]="'sync-outline'" [exibirAvatar]="false"></cub3-header>
+    <div  id="container"> 
+
+ 
+            <ion-row>
+              <ion-col>
+                <h4 class="header4">Minhas <b>turmas</b></h4>
+              </ion-col>
+            </ion-row>
+        <ion-list class="listOpcoes">
+          <ion-item    class="ion-activatable ripple-parent"   *ngFor="let item of turmas" [routerLink]="['/app/academico/academico-turma/'+item.id]" >
+            <ion-label><b>{{item.titulo}}</b> <ion-badge slot="end" color="secondary" style='float:right;font-size:.8em'>{{item.turno.descricao || ''}}</ion-badge><br /><small><ng-container *ngIf="item.nomeEscola">{{item.nomeEscola}}</ng-container></small></ion-label>
+            <ion-icon name="school-outline" slot="end"></ion-icon>
+            <ion-ripple-effect></ion-ripple-effect>
+          </ion-item>
+        </ion-list> 
+
+        <!-- <ion-row>
+          <ion-col>
+            <h4 class="header4">Sincronização de <b>dados</b></h4>
+          </ion-col>
+        </ion-row>
+        <ion-list class="notify-list">
+        <ion-item >
+                  <ion-row>
+                    <ion-col size="9">
+                  Eventos 
+                    </ion-col>
+                    <ion-col size="3">
+                      <ion-button color="danger" class="btnSincronizacao" (click)="cub3Svc.sincronizar('MOB_OCORRENCIAS')"><ion-icon name="sync-outline"></ion-icon></ion-button>
+                    </ion-col>
+                  </ion-row>
+                </ion-item>
+                <ion-item >
+                  <ion-row>
+                    <ion-col size="9">
+                     Aulas e frequência dos alunos
+                    </ion-col>
+                    <ion-col size="3">
+                      <ion-button color="danger" class="btnSincronizacao" (click)="cub3Svc.sincronizar('MOB_REGISTRO_AULA')"><ion-icon name="sync-outline"></ion-icon></ion-button>
+                    </ion-col>
+                  </ion-row>
+                </ion-item>
+                <ion-item >
+                  <ion-row>
+                    <ion-col size="9">
+                    Notas 
+                    </ion-col>
+                    <ion-col size="3">
+                      <ion-button color="danger" class="btnSincronizacao" (click)="cub3Svc.sincronizar('MOB_AVALIACAO_NOTA')"><ion-icon name="sync-outline"></ion-icon></ion-button>
+                    </ion-col>
+                  </ion-row>
+                </ion-item>
+                <ion-item >
+                  <ion-row>
+                    <ion-col size="8">
+                    Frequência dos alunos
+                    </ion-col>
+                    <ion-col size="4">
+                      <ion-button color="danger" class="btnSincronizacao" (click)="sincronizar('MOV_REGISTRO_FREQUENCIA')">Sincronizar</ion-button>
+                    </ion-col>
+                  </ion-row>
+                </ion-item> -->
+                <!-- <ion-item   >
+                  <ion-row>
+                    <ion-col size="9">
+                    Minha jornada de trabalho
+                    </ion-col>
+                    <ion-col size="3">
+                      <ion-button color="danger" class="btnSincronizacao" (click)="cub3Svc.sincronizar('MOB_PROF_FRQ')"><ion-icon name="sync-outline"></ion-icon></ion-button>
+                    </ion-col>
+                  </ion-row>
+                </ion-item> 
+                <ion-item>
+                  <ion-row>
+                    <ion-col size="9">
+                    Avaliações, conteúdo programático e alunos
+                    </ion-col>
+                    <ion-col size="3">
+                      <ion-button color="danger" class="btnSincronizacao" (click)="cub3Svc.sincronizar('GERAL')"><ion-icon name="sync-outline"></ion-icon></ion-button>
+                    </ion-col>
+                  </ion-row>
+                </ion-item> 
+                <ion-item lines="none" >
+                  <ion-row>
+                    <ion-col size="9">
+                    Sincronizar tudo
+                    </ion-col>
+                    <ion-col size="3">
+                      <ion-button color="danger" class="btnSincronizacao" (click)="sincronizarTudo()"><ion-icon name="sync-outline"></ion-icon></ion-button>
+                    </ion-col>
+                  </ion-row>
+                </ion-item> 
+      </ion-list>  -->
+ 
+  </div>
+</ion-content>

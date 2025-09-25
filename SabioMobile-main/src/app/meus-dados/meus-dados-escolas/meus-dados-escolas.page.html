@@ -1,0 +1,21 @@
+
+<cub3-header [titulo]="'Escolas<br /> <b>de atuação</b>'" [voltar]="true"  [exibirAvatar]="false" [icone]="'school-outline'"></cub3-header>
+<ion-content>
+        <ion-row>
+          <ion-col>
+            <h4 class="header4">Lista de <b>escolas</b></h4>
+          </ion-col>
+        </ion-row>
+        <ion-list class="notify-list">
+          <ion-item *ngFor="let item of data.MOB_ESCOLA; let i = index" lines="{{i == data.MOB_ESCOLA.length-1 ? 'none' : ''}}">
+            <ion-row> 
+              <ion-col col-12>
+                <p>{{item.NME_ESCOLA}}</p>
+              </ion-col>
+            </ion-row>
+          </ion-item>
+            <ion-item  lines="none" *ngIf="data.MOB_ESCOLA.length == 0">
+            <p style="text-align:center">Nenhuma informação disponível...</p>
+          </ion-item>
+      </ion-list>
+</ion-content>

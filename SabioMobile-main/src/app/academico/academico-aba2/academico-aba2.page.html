@@ -1,0 +1,19 @@
+
+
+<ion-content [fullscreen]="true"> 
+    <cub3-header [titulo]="'Grupo<br /> <b>Acadêmico</b>'" [icone]="'book-outline'" [exibirAvatar]="false"></cub3-header>
+    <div id="container"> 
+        <ion-row>
+          <ion-col>
+            <h4 class="header4" style='margin:0'>Menu <b>pedagógico</b></h4>
+          </ion-col>
+        </ion-row>
+        <ion-list class="listOpcoes">
+          <ion-item  *ngFor="let item of menu"  class="ion-activatable ripple-parent" [routerLink]="[item.link]" >
+            <ion-label><b>{{item.label}}</b><br /><small>{{item.desc}}</small></ion-label>
+            <ion-icon name="{{item.icone}}" slot="end"></ion-icon>
+            <ion-ripple-effect></ion-ripple-effect>
+          </ion-item>
+        </ion-list>
+    </div>
+</ion-content>

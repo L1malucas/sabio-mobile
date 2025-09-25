@@ -1,0 +1,22 @@
+<cub3-header [titulo]="'Gerenciamento de<br /> <b>Quizzes</b>'" [voltar]="true" [icone]="'document-outline'" [exibirAvatar]="false"></cub3-header>
+<ion-content>
+  <div id="container">
+    <ion-row>
+      <ion-col>
+        <h4 class="header4">Edição de <b>quiz</b></h4>
+      </ion-col>
+    </ion-row> 
+		<ion-item>
+		  <ion-label>Título</ion-label>
+		  <ion-input [(ngModel)]="dados.titulo"></ion-input>
+		</ion-item>
+	  <ion-item>
+	    <ion-textarea placeholder="Descrição" name="assunto" [(ngModel)]="dados.descricao"></ion-textarea>
+	  </ion-item>
+</div>
+  <ion-fab vertical="bottom" horizontal="end" slot="fixed">
+    <ion-fab-button (click)="salvarQuiz()" color="success">
+      <ion-icon name="checkmark-outline"></ion-icon>
+    </ion-fab-button>
+  </ion-fab>
+</ion-content>

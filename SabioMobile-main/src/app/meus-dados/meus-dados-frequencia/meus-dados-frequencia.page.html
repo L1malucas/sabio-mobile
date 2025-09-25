@@ -1,0 +1,38 @@
+
+<cub3-header [titulo]="'Minha<br /> <b>frequência</b>'" [voltar]="true"  [exibirAvatar]="false" [icone]="'time-outline'"></cub3-header>
+<ion-content>
+        <ion-row>
+          <ion-col>
+            <h4 class="header4">Listagem de <b>registros</b></h4>
+          </ion-col>
+        </ion-row>
+        <ion-list class="notify-list">
+          <ion-item >
+		        <ion-row >
+		            <ion-col size="6">
+		                <b>Tipo</b>
+		            </ion-col>
+		            <ion-col size="6">
+		                <b>Data e horário</b>
+		            </ion-col>
+		        </ion-row> 
+		      
+          </ion-item>
+        	<ng-container *ngFor="let item of data.MOB_PROF_FRQ; let i = index">
+				    <ion-item *ngIf="item.TIP_REGISTRO != 'undefined'"  lines="{{i == data.MOB_PROF_FRQ.length-1 ? 'none' : ''}}">
+				        <ion-row >
+				            <ion-col size="6">
+				                <span [ngClass]="{entrada: item.TIP_REGISTRO == 'ENTRADA', saida: item.TIP_REGISTRO == 'SAIDA'}">{{item.TIP_REGISTRO}}</span>
+				            </ion-col>
+				            <ion-col size="6">
+				                <span class="text-center">{{item.DAT_REGISTRO   |   amDateFormat: 'L'}} às {{item.DAT_REGISTRO |   amDateFormat: 'HH:mm'}}</span>
+				            </ion-col>
+				        </ion-row> 
+				    </ion-item>
+		      </ng-container>
+            <ion-item  lines="none" *ngIf="data.MOB_PROF_FRQ.length == 0">
+            <p style="text-align:center">Nenhuma informação disponível...</p>
+          </ion-item>
+      </ion-list>
+
+</ion-content>

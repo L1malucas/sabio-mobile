@@ -1,0 +1,35 @@
+ <cub3-header [titulo]="'Registro de<br /> <b>eventos</b>'" [voltar]="true" [icone]="'clipboard-outline'" [exibirAvatar]="false"></cub3-header>
+
+<ion-content>
+	<div id="container">
+        <ion-row>
+          <ion-col>
+            <h4 class="header4">Lista de <b>eventos e ocorrências</b></h4>
+          </ion-col>
+        </ion-row>
+        <ion-list class="notify-list">
+        	<ng-container *ngFor="let item of dados; let i = index">
+	          <ion-item  lines="{{i == dados.length-1 ? 'none' : ''}}" [routerLink]="['/app/academico/academico-ocorrencia/'+item.IDF_OCORRENCIA_LOCAL]" *ngIf="item.IDF_PROFISSIONAL == usuario.id" >
+	            <ion-row> 
+	              <ion-col col-12>
+	                <p><b>{{cub3Svc.normalizeString(item.aluno.nome)}}</b><br />Evento/ocorrência em {{item.DAT_OCORRENCIA | amDateFormat: 'DD/MM/YYYY HH:mm'}}</p>
+	              </ion-col>
+	            </ion-row>
+	            <ion-icon name="chevron-forward-outline" slot="end"></ion-icon>
+	          </ion-item>
+	      </ng-container>
+	          <ion-item  lines="none" *ngIf="dados.length == 0">
+	            <p style="text-align:center">Nenhuma informação disponível...</p>
+	          </ion-item>
+      </ion-list>
+	</div> 
+
+</ion-content>
+
+<ion-footer  >
+  <ion-toolbar #footer> 
+	    <ion-button color="primary" [routerLink]="['/app/academico/academico-ocorrencia-novo']">
+	      Adicionar registro
+	    </ion-button> 
+  </ion-toolbar>
+</ion-footer>

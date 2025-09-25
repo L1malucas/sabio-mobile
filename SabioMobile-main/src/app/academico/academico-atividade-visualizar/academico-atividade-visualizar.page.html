@@ -1,0 +1,258 @@
+ <cub3-header [titulo]="'Visualizar <br /> <b>atividade</b>'" [voltar]="true" [icone]="'bookmarks-outline'" [exibirAvatar]="false"></cub3-header>
+<ion-content>
+    <div id="container">
+    	<ion-row>
+    		<ion-col size="4" class="full-mobile">
+    			<ion-card id="atividade-card">
+    				<ion-card-header>
+    					<h1>Atividade #{{dados.id}}<br />
+    						<ion-row>
+    							<ion-col size="6">
+									<ion-badge color="warning">
+										<ion-icon name="book-outline"></ion-icon> {{dados.disciplina?.NME_DISCIPLINA | titlecase}}</ion-badge> 
+    							</ion-col>
+    							<ion-col size="6">
+									<ion-badge color="light">
+										<ng-container [ngSwitch]="dados.tipo_atividade">
+											<ng-container *ngSwitchCase="1">
+												<ion-icon  name="home-outline"></ion-icon> De casa
+											</ng-container>
+											<ng-container *ngSwitchCase="2">
+												<ion-icon  name="calculator-outline"></ion-icon> Avaliativa
+											</ng-container>
+										</ng-container>
+									</ion-badge> 
+    							</ion-col>
+    						</ion-row>
+    					</h1> 
+    					<ion-row class="avatar-lista">
+    						<ion-avatar>
+							  <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRdF43DYvw3xanVoMtAfwBQcza3k-czKpsnUQ&usqp=CAU">
+							</ion-avatar>
+
+    						<ion-avatar>
+							  <img src="https://previews.123rf.com/images/olegdudko/olegdudko1507/olegdudko150713627/42687153-book-school-kid-.jpg">
+							</ion-avatar>
+
+    						<ion-avatar>
+							  <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTYHy0LSeFIEvxo8PctV860K0sVqxZD66JrmA&usqp=CAU">
+							</ion-avatar> 
+						</ion-row>
+
+
+
+    				</ion-card-header>
+    				<ion-card-content>  
+    					<div id="descricao">
+						<ion-title>{{dados.titulo | titlecase}}</ion-title>
+    						<div [innerHTML]="dados.descricao"></div>
+    					</div>
+    					<ion-row class="v-center">
+    						<ion-col size="6">
+    							<ion-badge color="light">
+	    							<ion-icon name="calendar-outline"></ion-icon> {{dados.horario_criacao | amDateFormat: 'DD/MM/YYYY'}}
+	    						</ion-badge>
+	    					</ion-col>
+    						<ion-col size="6">
+    							<ion-button [routerLink]="['/app/academico/academico-atividade-editar/'+dados.id]" style='float:right' size="small" fill="outline" color="danger"><ion-icon name="create-outline" slot="start" color="danger"></ion-icon> Editar</ion-button>
+    						</ion-col>
+    					</ion-row>
+    				</ion-card-content>
+    			</ion-card>
+    		</ion-col>
+    		<ion-col size="8" class="full-mobile">
+					<ion-segment  value="informacoes" scrollable="true" [(ngModel)]="abaAtiva"> 
+					  <ion-segment-button value="mensagens">
+					    <ion-label><ion-icon name="chatbox-outline"></ion-icon> Mensagens</ion-label>
+					  </ion-segment-button>
+					  <ion-segment-button value="entregas">
+					    <ion-label><ion-icon name="navigate-outline"></ion-icon> Entregas</ion-label>
+					  </ion-segment-button> 
+					  <ion-segment-button value="tarefas">
+					    <ion-label><ion-icon name="folder-outline"></ion-icon> Tarefas</ion-label>
+					  </ion-segment-button>
+					  <ion-segment-button value="material">
+					    <ion-label><ion-icon name="folder-outline"></ion-icon> Material</ion-label>
+					  </ion-segment-button>
+					  <ion-segment-button value="quiz">
+					    <ion-label><ion-icon name="help-outline"></ion-icon> Quiz</ion-label>
+					  </ion-segment-button> 
+					</ion-segment>
+
+		<ng-container [ngSwitch]="abaAtiva">
+			<ng-container *ngSwitchCase="'mensagens'"> 
+			        <ion-row>
+			          <ion-col>
+			          	<ion-item lines="none">
+			            <h4 class="header4"><b>Quadro de mensagens</b><br /><small>Utilize o quadro abaixo para enviar ou responder mensagens dos alunos:</small></h4>	 
+	              		</ion-item>            
+			          </ion-col>
+			        </ion-row> 
+			        <div id="quadro-msg">
+			        	<div class="main">
+	<div class="main-screen">
+			        <div id="chat-interno" class="chat-screen"> 
+			<div class="chat-screen-body" #chat> 
+				<ng-container *ngFor='let chat of dados.chat'>
+					<div class="message-{{chat.autor ? 'sender' : 'reciever'}}"> 
+						<div class="message-sender-content">
+							<span class="message-{{chat.autor ? 'sender' : 'reciever'}}-content-message">
+							<ng-container *ngIf="!chat.autor"><b>{{chat.nome}}</b> <br /> </ng-container>
+							{{chat.mensagem}}</span>
+							<span class="message-{{chat.autor ? 'sender' : 'reciever'}}-content-time">{{chat.horario | amDateFormat: 'HH:mm'}}</span>
+						</div>
+					</div>  
+				</ng-container>
+			</div>
+			<div class="chat-screen-footer">
+				<form (ngSubmit)="enviarMensagem(chat)">
+					<div class="input">
+						<input id="message-input" placeholder="Enviar uma mensagem..." type="text" [(ngModel)]="mensagemChat" name="mensagemChat">
+						<button type="submit">
+							<ion-icon name="send-outline"></ion-icon>
+						</button>
+					</div>
+				</form>
+			</div>
+		</div>
+	</div>
+</div>
+	</div>
+			 </ng-container>
+			 <ng-container *ngSwitchCase="'entregas'">			 	
+		        <ion-row>
+		          <ion-col>
+		          	<ion-item lines="none">
+		            <h4 class="header4"><b>Entregas</b><br /><small>Acompanhe o andamento das entregas:</small></h4>	 
+              		</ion-item>            
+		          </ion-col>
+		        </ion-row> 
+
+		  		<p *ngIf="!dados.turmas || (dados.turmas && dados.turmas.length == 0)" class="msg-vazio">Nenhuma turma associada à atividade...</p>
+		  		<div *ngIf="dados.turmas && (dados.turmas.length > 0)">
+		  			<ion-list *ngFor="let turma of dados.turmas" class="listOpcoes">
+		  				<ion-item *ngFor="let aluno of turma.alunos">
+		  					<ion-row>
+		  						<ion-col>
+				  					<ion-label>
+				  						{{aluno.NME_ALUNO}}
+				  					</ion-label>
+		  						</ion-col>
+		  					</ion-row>
+		  					<ion-row>
+		  						<ion-col>
+									<ion-progress-bar color="primary" value="0.5"></ion-progress-bar>
+		  						</ion-col>
+		  					</ion-row>
+            				<ion-ripple-effect></ion-ripple-effect>
+		  				</ion-item>
+		  			</ion-list>
+		  		</div>
+			 </ng-container>
+			<ng-container *ngSwitchCase="'material'"> 
+			        <ion-row>
+			          <ion-col>
+			          	<ion-item lines="none">
+				            <h4 class="header4"><b>Material da atividade</b><br /><small>Visualize os arquivos e materiai de consulta enviados para a atividade:</small></h4>	
+				      </ion-item>		            
+				          </ion-col>
+			        </ion-row> 
+
+				      <div id='arquivos-lista'>
+				        <ng-container *ngFor="let arquivo of dados.arquivos">
+				          <ion-card style='' (click)="selecionarArquivo(arquivo)">
+				            <img src="assets/icons/arquivo-{{arquivo.extensao}}.png" class="icone-card" />
+				          <ion-card-header>
+				            <ion-card-subtitle>Arquivo <span style='text-transform:uppercase'>{{arquivo.extensao}}</span></ion-card-subtitle>
+				            <ion-card-title>{{arquivo.arquivo | titlecase}}</ion-card-title>
+				          </ion-card-header>
+
+				          <ion-card-content>
+				            {{arquivo.horario | amDateFormat: 'DD/MM/YYYY HH:mm'}}
+				          </ion-card-content>
+				        </ion-card> 
+				      </ng-container>
+				      </div>
+			</ng-container>
+			<ng-container *ngSwitchCase="'quiz'"> 
+			        <ion-row>
+			          <ion-col>
+			          	<ion-item lines="none">
+				            <h4 class="header4"><b>Quizzes da atividade</b><br /><small>Arraste a lista para a esquerda ou para a direita para navegar entre os quizzes:</small></h4>	
+				      </ion-item>		            
+				          </ion-col>
+			        </ion-row> 
+				<ion-card > 
+				  <ion-card-content>  
+				  	<ion-list class="listOpcoes" style='border-radius: 0px'>
+				  		<ion-item *ngFor="let quiz of dados.quizzes"> 
+				  			<ion-label>
+				  					<b>{{quiz.titulo}}</b><br />
+				  					<small>{{tratarHTML(quiz.descricao)}}</small>  
+				  				</ion-label> 
+
+				  		</ion-item> 
+				  	</ion-list>
+				  		<p *ngIf="!dados.quizzes || (dados.quizzes && dados.quizzes.length == 0)" class="msg-vazio">Nenhum quiz disponível...</p>
+				  </ion-card-content>
+				</ion-card>
+			</ng-container>
+			<ng-container *ngSwitchCase="'tarefas'"> 
+			        <ion-row>
+			          <ion-col>
+			          	<ion-item lines="none">
+			            <h4 class="header4"><b>Tarefas da atividade</b><br /><small>Arraste as tarefas para os lados ou clique na paginação para navegar entre os itens:</small></h4>	 
+	              		</ion-item>            
+			          </ion-col>
+			        </ion-row> 
+
+			      <ion-slides #sliderTarefas pager="true" [options]="{initialSlide: 0, speed: 400}">
+			        <ion-slide *ngFor="let tarefa of dados.tarefas; let i = index">
+				<ion-card > 
+				  <ion-card-content> 
+				  	<ion-list>
+					  	<ion-item lines="none">
+				  			<ion-title>
+				  				<ion-icon name="book-outline"></ion-icon> Tarefa {{i+1}}
+				  			</ion-title> 
+				  		</ion-item>
+
+		  			<ion-item lines="none">
+					  <ion-label ><ion-icon name="book-outline"></ion-icon> Título da tarefa</ion-label>
+					  
+					</ion-item>
+					<ion-item>
+						{{tarefa.titulo}}
+					</ion-item>
+		  			<ion-item lines="none">
+					  <ion-label ><ion-icon name="book-outline"></ion-icon> Link da tarefa</ion-label>
+					  
+					</ion-item>
+					<ion-item>
+						<a target="_blank" [href]="tarefa.link">Abrir</a>
+					</ion-item>
+		  			<ion-item lines="none">
+					  <ion-label ><ion-icon name="book-outline"></ion-icon> Valor da tarefa</ion-label>
+					  
+					</ion-item>
+					<ion-item>
+						{{tarefa.valor}}
+					</ion-item>
+				  	</ion-list>
+		  			<ion-title><ion-icon name="pencil-outline"></ion-icon> Descrição da tarefa</ion-title>
+			  		<ion-list>
+			  			<ion-item class="box-conteudo">
+	  							<div [innerHTML]="tarefa.descricao"></div>
+	  						</ion-item>
+			  		</ion-list>
+		  			<ion-title><ion-icon name="document-outline"></ion-icon> Arquivos da tarefa</ion-title> 
+				  </ion-card-content>
+				</ion-card>
+			        </ion-slide> 
+			      </ion-slides>
+			</ng-container>
+		</ng-container>
+    		</ion-col>
+    	</ion-row>
+     </div>
+</ion-content>

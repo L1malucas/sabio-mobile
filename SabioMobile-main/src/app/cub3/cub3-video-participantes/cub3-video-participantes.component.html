@@ -1,0 +1,172 @@
+<div #dominant></div>
+<div class='abas-grupo' *ngIf="!capturandoFoto">
+
+	<div  class="aba" [ngClass]="{ 'd-block': menuAtivo == 'camera' }">
+	  <ion-fab vertical="bottom" horizontal="start" style="bottom:70px; left:10px;">
+	    <ion-fab-button style='left:30px;'>
+	      <ion-icon name="settings"></ion-icon>
+	    </ion-fab-button>
+	    <ion-fab-list side="top">
+	    	<ng-container  *ngIf='aula.status == "PENDENTE"'>
+		      <ion-fab-button color="danger" (click)="ExcluirAula()" ><ion-icon name="trash-outline"></ion-icon></ion-fab-button>
+		      <ion-label>Excluir</ion-label> 
+		  </ng-container>
+	      <ion-fab-button color="success" (click)="finalizarAula()"><ion-icon name="trophy-outline"></ion-icon></ion-fab-button>
+	      <ion-label>Finalizar</ion-label> 
+	      <ion-fab-button color="danger" (click)="sair()" ><ion-icon name="log-out-outline"></ion-icon></ion-fab-button>
+	      <ion-label>Sair</ion-label> 
+	      <ion-fab-button color="warning" (click)="RecarregarAula()"><ion-icon name="refresh-circle-outline"></ion-icon></ion-fab-button> 
+	      <ion-label>Recarregar</ion-label>
+	      <ng-container  *ngIf="usuario.perfil != 'ALUNO'">
+	      <ion-fab-button color="{{!compartilhandoTela ? 'primary' : 'danger'}}" (click)="CompartilharDesktop()"><ion-icon name="refresh-circle-outline"></ion-icon></ion-fab-button> 
+	      <ion-label>{{!compartilhandoTela ? 'Compartilhar tela' : 'Rem. compartilhamento'}}</ion-label>
+	  </ng-container>
+<!-- 	      <ion-fab-button color="light" (click)="CompartilharDesktop()"><ion-icon name="phone-portrait-outline"></ion-icon></ion-fab-button> 
+	      <ion-label>Compartilhar tela</ion-label> -->
+	    </ion-fab-list>
+	  </ion-fab>
+	  <ion-fab vertical="bottom" horizontal="end" style="bottom:70px; right: 30px; ">
+	    <ion-fab-button [color]="microfoneAberto ? 'success' : 'danger'" (click)="ativarVoz($event)" *ngIf="usuario.perfil == 'PROFESSOR'">
+	      <ion-icon name="{{!microfoneAberto ? 'mic-off-outline' : 'mic-outline'}}" ></ion-icon>
+	    </ion-fab-button>
+
+	    <ion-fab-button [color]="!microfoneAtivo ? 'warning' : 'danger'" (click)="ativarVoz($event)" *ngIf="usuario.perfil == 'ALUNO'">
+	      <ion-icon name="hand-right-outline" ></ion-icon>
+	    </ion-fab-button>
+	  </ion-fab>
+	</div>
+
+	<div  class="aba" [ngClass]="{ 'd-block': menuAtivo == 'chat' }">
+					<ion-card class="card-branco card-chat card-blur">
+  						<ion-card-content>	 
+						<ion-row>
+							<ion-col size="9">
+								<h4 class="header">
+									Chat
+								</h4>
+							</ion-col>
+							<ion-col size="3">
+								<input 
+								    hidden 
+								    type="file" 
+								    #uploader
+								    (change)="uploadFile($event)"
+								/>
+								<ion-button size="small" color="warning" class="pull-right" (click)="enviarArquivo(uploader)">Enviar arquivo</ion-button> 
+							</ion-col>
+					</ion-row>
+						<div class="chat-box">
+							<div class="message-box">
+								<div>
+									<ul id="messages" class="message" #mensagensFrame >
+										<li *ngFor="let item of mensagens" [ngClass]="{'autor': verificarAutor(item), 'usuario': !verificarAutor(item)}">
+											
+											<p><span [ngClass]="{'right': verificarAutor(item)}" class="time nome">{{getPrimeiroNome(item.aluno ? item.aluno : item.profissional)}}</span>
+												<ng-container *ngIf="item.arquivo == null || item.arquivo == ''">
+													{{item.conteudo}}
+												</ng-container>
+												<ng-container *ngIf="item.arquivo != null && item.arquivo != '' && item.arquivo_nome">
+													<a (click)="abrirArquivo(item)" class="badge-arquivo"><b>Arquivo:</b>{{item.arquivo_nome}}</a>
+												</ng-container>
+											</p>
+										</li>
+									</ul>
+								</div> 
+							</div>
+						</div>
+								</ion-card-content>
+					</ion-card>
+
+	</div>
+	<div  class="aba" [ngClass]="{ 'd-block': menuAtivo == 'participantes' }" *ngIf="turma && turma.alunos && turma.alunos.length > 0">
+					<ion-card class="card-branco card-chat card-blur">
+		<ion-card-content>
+			<ng-container >
+			<ion-row>
+			<h4 class="header">
+			<b>Turma {{turma.IDF_TURMA}}</b> / ({{aula.alunos ? aula.alunos.length + ' presente(s)' : 'Nenhum aluno presente'}}) <ion-button size="small" color="primary" class="pull-right" (click)="AddAluno()" *ngIf="aula.tipo == 'PRESENCIAL'">Adicionar aluno</ion-button> 
+			</h4> 
+			</ion-row> 
+			</ng-container>
+			<div id="participant-list">
+				<div [ngClass]="{ 'd-none': isAlone }">
+					<div id="participantes-grid">
+						<div #list id="grid-alunos" *ngIf="turma && turma.alunos.length > 0"> 
+							<div class="box-video" *ngFor="let item of turma.alunos" id="aluno-{{item.IDF_ALUNO}}">   
+									<ion-badge>
+										{{item.NME_ALUNO}}
+									</ion-badge> 
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+		</ion-card-content>
+		</ion-card>
+	</div>
+	<div  class="aba" [ngClass]="{ 'd-block': menuAtivo == 'ajustes' }">
+		<ion-card class="card-transparente">
+		<ion-card-content>
+		<cub3-video-preferencias  #ajustes></cub3-video-preferencias>
+		<!-- <ion-button (click)="sair()">Sair da aula</ion-button> -->
+		</ion-card-content>
+		</ion-card>
+	</div>
+	<div  class="aba" [ngClass]="{ 'd-block': menuAtivo == 'info' }">
+					<ion-card class="card-branco card-chat card-blur card-informacoes">
+		<ion-card-content>
+		<h4 class="header">
+		Informações sobre a aula
+		</h4>
+		<ion-list *ngIf="aula">
+		<ion-item>
+		<ion-icon name="bookmark-outline"  slot="start" color="primary"></ion-icon> <p>{{aula.curso}}</p>
+		</ion-item>
+		<!-- <ion-item>
+		<ion-icon name="book-outline" slot="start" color="primary"></ion-icon> <p>{{aula.tema}}</p>
+		</ion-item> -->
+		<ion-item *ngIf="aula.horario_abertura && aula.status == 'INICIADA'" >
+		<ion-icon name="alarm-outline" slot="start" color="primary"></ion-icon> <p>Aberta às <b>{{aula.horario_abertura | amDateFormat: 'HH:mm'}}</b></p>
+		</ion-item>
+		<ion-item *ngIf="aula.horario_cadastro" >
+		<ion-icon name="alarm-outline" slot="start" color="primary"></ion-icon> <p>Criada às <b>{{aula.horario_cadastro | amDateFormat: 'HH:mm'}}</b></p>
+		</ion-item>
+		<ion-item *ngIf="aula.horario_agendado">
+		<ion-icon name="calendar-outline"  slot="start" color="primary"></ion-icon> <p>Agendada para <b>{{aula.horario_agendado | amDateFormat: 'HH:mm'}}</b></p>
+		</ion-item>
+		</ion-list>
+<!-- 		<ion-button color="success" (click)="finalizarAula()" style='width: 100%'>Finalizar aula</ion-button>
+		<ion-button color="danger" (click)="sair()" style='width: 100%'>Sair da aula</ion-button> -->
+		</ion-card-content>
+		</ion-card>
+	</div> 
+</div>
+<ion-footer  *ngIf="!capturandoFoto" >
+<form *ngIf="menuAtivo == 'chat'" (ngSubmit)="enviarMensagem()">
+	<ion-item id="caixa-chat" >
+	<ion-button slot="end" fill="clear" (click)="enviarMensagem()" icon-only="true"><ion-icon name="paper-plane-outline"  color="primary"></ion-icon></ion-button>
+	<ion-input name="chat" [(ngModel)]="chat" placeholder="Digite uma mensagem..."></ion-input>
+	</ion-item>
+</form>
+<ion-toolbar>
+<ion-segment value="participantes" [(ngModel)]="menuAtivo"  >
+			    <ion-segment-button value="camera"  (click)="alterarMenu('camera')">
+			    <ion-icon name="videocam-outline"></ion-icon>
+			    </ion-segment-button>
+				<ion-segment-button value="chat"  (click)="alterarMenu('chat')">
+					<ion-icon name="chatbubbles-outline">
+				          <ion-badge id="notifications-badge" color="danger">5</ion-badge>
+				      </ion-icon>
+				</ion-segment-button>
+				<ion-segment-button value="participantes" (click)="alterarMenu('participantes')"  *ngIf="turma && turma.alunos && turma.alunos.length > 0">
+				<ion-icon name="people-outline"></ion-icon>
+				</ion-segment-button>
+				<!-- <ion-segment-button value="ajustes" (click)="alterarMenu('ajustes')">
+				<ion-icon name="hammer-outline"></ion-icon>
+				</ion-segment-button> -->
+				<ion-segment-button value="info" (click)="alterarMenu('info')">
+				<ion-icon name="book-outline"></ion-icon>
+				</ion-segment-button>
+				</ion-segment>
+				</ion-toolbar>
+</ion-footer>

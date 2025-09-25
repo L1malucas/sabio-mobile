@@ -1,0 +1,6 @@
+ 
+  <ion-item *ngIf="devices && devices.length > 0">  
+    <ion-select placeholder="Selecione"   (change)="onSettingsChanged($event.target.value)">
+      <ion-select-option  *ngFor="let device of devices" [value]="device.deviceId">{{ device.label }}</ion-select-option> 
+    </ion-select>
+  </ion-item>

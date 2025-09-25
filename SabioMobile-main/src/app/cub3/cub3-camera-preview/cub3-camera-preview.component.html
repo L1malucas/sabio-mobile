@@ -1,0 +1,15 @@
+<div id="camera-preview">
+	<div id="camera-footer"> 
+			<div class="webcam-acoes">
+				<button class="btn-voltar"  [ngClass]="{'btn-success': this.deteccaoRosto == 'reconhecido', 'btn-danger': this.deteccaoRosto == 'invalido'}" (click)="fechar()">
+					<ion-icon name="return-up-back-outline" style='font-size: 2em;'></ion-icon>
+				</button>
+				<button class="btn-validar"  [ngClass]="{'btn-success': this.deteccaoRosto == 'reconhecido', 'btn-danger': this.deteccaoRosto == 'invalido'}" (click)="validarRostoManual()">
+					<ion-icon name="camera" style='font-size: 3em;'></ion-icon>
+				</button>
+				<button class="btn-alterar"  [ngClass]="{'btn-success': this.deteccaoRosto == 'reconhecido', 'btn-danger': this.deteccaoRosto == 'invalido'}" (click)="alterarCamera()">
+					<ion-icon name="camera-reverse-outline" style='font-size: 2em;'></ion-icon>
+				</button>
+			</div>
+	</div>
+</div>

@@ -1,0 +1,40 @@
+ <cub3-header [titulo]="'Plano de <br /> <b>Ensino</b>'" [voltar]="true" [icone]="'bookmarks-outline'" [exibirAvatar]="false"></cub3-header>
+<ion-content>
+
+	<div id="container" *ngIf="data && getConteudo()">
+	    <ion-row>
+	      <ion-col>
+	        <h4 class="header4">Detalhes do <b>plano de ensino</b></h4>
+	      </ion-col>
+	    </ion-row>
+
+			  <ion-card   class="ion-activatable ripple-parent"  *ngIf="getConteudo().CONTEUDOS && getConteudo().CONTEUDOS.length > 0">
+			  	<ion-card-header>
+			  	<ion-row  >
+			  		<ion-col size="1">
+			  			<b>#</b>
+			  		</ion-col>
+			  		<ion-col size="7">
+			  			<b>Conteúdo</b>
+			  		</ion-col>
+			  		<ion-col size="4">
+			  			<b>Carga horária</b>
+			  		</ion-col>
+			  	</ion-row>
+
+			  	</ion-card-header>
+			  	<ion-row *ngFor="let item of getConteudo().CONTEUDOS; let i = index">
+			  		<ion-col size="1">
+			  			{{i+1}}
+			  		</ion-col>
+			  		<ion-col size="7">
+			  			{{item.DES_CONTEUDO}}
+			  		</ion-col>
+			  		<ion-col size="4">
+			  			50 (Minutos)
+			  		</ion-col>
+			  	</ion-row>
+			  </ion-card>
+	</div>
+
+</ion-content>

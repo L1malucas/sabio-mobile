@@ -1,0 +1,68 @@
+.week-grid {
+    display: flex;
+    justify-content: space-between;
+    padding: 10px;
+    div {
+      text-align: center;
+      .calendario-label {
+        font-weight: bold;
+        font-size: .8em;
+      }
+      cursor: pointer;
+      padding: 10px;
+      position: relative;
+      .day-label {
+        display: block;
+        font-weight: bold;
+      }
+      .day-date {
+        display: block;
+      }
+      &.selected {
+        background-color: #007bff;
+        color: white;
+        border-radius: 50%; 
+        min-width: 40px;
+      }
+      &.event {
+        position: relative;
+        .event-dot {
+          position: absolute;
+          bottom: -10px;
+          left: 50%;
+          transform: translateX(-50%);
+          width: 6px;
+          height: 6px;
+          background-color: red;
+          border-radius: 50%;
+        }
+      }
+    }
+  }
+  
+  ion-item-divider {
+    background-color: #f4f4f4;
+  }
+  
+  .time-column {
+    text-align: center; 
+  }
+  
+  .details-column {
+    display: block;
+  }
+
+  .slide-in {
+    animation: slideIn 0.5s forwards;
+  }
+  
+  @keyframes slideIn {
+    from {
+      transform: translateX(100%);
+      opacity: 0;
+    }
+    to {
+      transform: translateX(0);
+      opacity: 1;
+    }
+  }

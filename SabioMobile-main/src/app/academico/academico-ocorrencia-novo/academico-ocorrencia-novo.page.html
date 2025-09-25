@@ -1,0 +1,43 @@
+ <cub3-header [titulo]="'Novo <br /> <b>evento</b>'" [voltar]="true" [icone]="'bookmarks-outline'" [exibirAvatar]="false"></cub3-header>
+<ion-content> 
+        <ion-row>
+          <ion-col>
+            <h4 class="header4"> Formulário de novo registro de <b>evento</b></h4>
+          </ion-col>
+        </ion-row> 
+		<ion-card > 
+		  <ion-card-content *ngIf="!carregando"> 
+		  		<ion-list>
+			          <ion-item no-lines>
+			          <ion-label>Aluno *</ion-label>
+			          <ion-select [(ngModel)]="ocorrencia.IDF_ALUNO" name="aluno"  okText="Selecionar" cancelText="Cancelar" required >
+			            <ion-select-option [value]="item.id"  *ngFor="let item of alunos">{{cub3Svc.normalizeString(item.nome)}}</ion-select-option> 
+			          </ion-select>
+			        </ion-item> 
+			          <ion-item no-lines>
+			          <ion-label>Tipo de evento *</ion-label>
+			          <ion-select [(ngModel)]="ocorrencia.IDF_OCORRENCIA" name="ocorrencia"  okText="Selecionar" cancelText="Cancelar"  required >
+			            <ion-select-option [value]="item.IDF_OCORRENCIA"  *ngFor="let item of tipos">{{item.DES_OCORRENCIA}}</ion-select-option> 
+			          </ion-select>
+			        </ion-item> 
+			        <ion-item>
+			        <ion-icon name="ios-chatboxes-outline"  item-left></ion-icon>
+			        <ion-textarea placeholder="Detalhes ou observações do evento..." rows="4" required name="detalhes" [(ngModel)]="ocorrencia.TXT_OCORRENCIA" ></ion-textarea>
+			        </ion-item>  
+			        <ion-item>
+			        <ion-icon name="ios-mail-outline"  item-left></ion-icon>
+			        <ion-textarea placeholder="Observação..." rows="4" name="observacao" [(ngModel)]="ocorrencia.OBSERVACAO"></ion-textarea>
+			        </ion-item>
+		  		</ion-list>
+		  </ion-card-content>
+		</ion-card>  
+</ion-content>
+
+
+<ion-footer  >
+  <ion-toolbar #footer > 
+	    <ion-button color="danger" (click)="submit()" >
+	      Confirmar
+	    </ion-button> 
+  </ion-toolbar>
+</ion-footer>

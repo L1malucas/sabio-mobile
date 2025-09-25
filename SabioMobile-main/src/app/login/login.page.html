@@ -1,0 +1,245 @@
+<ion-content #conteudo>
+	<ng-container *ngIf="exibirLogin">
+		<div [style.display]="exibirLogin ? 'block' : 'none'">
+			<div id="bg-login2"></div>
+			<div #inicio>
+				<div id="inicio-desk">
+					<div id="desk-login">
+						<ion-row id="row-login">
+							<ion-col size="7" id="col-box">
+								<div id="login-info">
+									<ion-row>
+										<ion-col size="12" style="text-align: center;padding:1em">
+											<img src="assets/img/logo-white.png" style="max-width: 25vw;margin:auto;">
+										</ion-col>
+									</ion-row>
+								</div>
+								<div id="bg-login3"></div>
+							</ion-col>
+							<ion-col size="5" id="col-login">
+								<form name="frmLogin" #frmLogin (ngSubmit)="realizarLogin()">
+									<h3 style='color:black !important'><b>Olá</b>! Por gentileza, realize o login
+										abaixo:</h3>
+									<div style="height:0; overflow:hidden">
+										<input style="opacity:0;" type="text" name="login" value="" class="" />
+										<input style="opacity:0;" type="password" name="senha" value="" class="d-" />
+									</div>
+									<ion-row>
+										<ion-col>
+											<ion-item no-lines>
+												<ion-label>Tipo de acesso: *</ion-label>
+												<ion-select [selectedText]='' interface="popover"
+													(ionChange)="atualizarTipo()" [(ngModel)]="tipoSelecionado"
+													name="tipo" okText="Selecionar" cancelText="Cancelar" required>
+													<ion-select-option [value]="tipo" *ngFor="let tipo of tipoLogins">
+														{{tipo.label}}</ion-select-option>
+												</ion-select>
+											</ion-item>
+										</ion-col>
+									</ion-row>
+									<ion-row>
+										<ion-col>
+											<ion-item>
+												<ion-label>
+													<ion-icon name="person-outline"></ion-icon>
+												</ion-label>
+												<ion-input placeholder="Login" type="text" name="login"
+													autocomplete="educalogin" [(ngModel)]="login.usuario"></ion-input>
+											</ion-item>
+										</ion-col>
+									</ion-row>
+									<ion-row>
+										<ion-col>
+											<ion-item>
+												<ion-label>
+													<ion-icon name="lock-closed-outline"></ion-icon>
+												</ion-label>
+												<ion-input placeholder="Senha" type="password" name="senha"
+													autocomplete="educalogin" [(ngModel)]="login.senha"></ion-input>
+											</ion-item>
+										</ion-col>
+									</ion-row>
+									<ion-row>
+										<ion-col>
+											<ion-item no-lines>
+												<ion-label>Chave de acesso</ion-label>
+												<ion-select [selectedText]='' interface="popover"
+													(ionChange)="getExercicio()" [(ngModel)]="login.chave" name="chave"
+													okText="Selecionar" cancelText="Cancelar">
+													<ion-select-option [value]="chave.COD_CHAVE"
+														*ngFor="let chave of chaves">{{chave.NME_MUNICIPIO}} /
+														{{chave.DES_CHAVE}}</ion-select-option>
+												</ion-select>
+											</ion-item>
+										</ion-col>
+									</ion-row>
+									<ion-row>
+										<ion-col>
+											<ion-item no-lines>
+												<ion-label>Ano letivo</ion-label>
+												<ion-select [selectedText]='' interface="popover"
+													[(ngModel)]="login.ano" name="ano"  
+													okText="Selecionar" cancelText="Cancelar">
+													<ion-select-option [value]="ano" 
+														*ngFor="let ano of exercicio">{{ano}} </ion-select-option>
+												</ion-select>
+											</ion-item>
+										</ion-col>
+									</ion-row>
+									<ion-row>
+										<ion-col>
+											<p>Ao entrar, você estará concordando com os nossos <a
+													[routerLink]="['/termos-de-uso']">Termos de uso</a> e <a
+													[routerLink]="['/politicas-de-privacidade']">Políticas de
+													privacidade</a>.</p>
+										</ion-col>
+									</ion-row>
+									<ion-row>
+										<ion-col>
+											<p>Versão do aplicativo: {{ cub3Svc.versaoApp }}</p>
+										</ion-col>
+									</ion-row>
+									<ion-row>
+										<ion-col>
+											<ion-button class="{{tipoSelecionado?.classe}} btn-login" color="primary"
+												(click)="realizarLogin()">
+												Entrar
+											</ion-button>
+										</ion-col>
+									</ion-row>
+									<ion-row>
+										<ion-col>
+											<ion-item lines="none" class="checkbox">
+												<ion-label>Salvar dados de login</ion-label>
+												<ion-checkbox [(ngModel)]="login.salvar" name="lembrar"></ion-checkbox>
+											</ion-item>
+										</ion-col>
+									</ion-row>
+								</form>
+							</ion-col>
+						</ion-row>
+					</div>
+				</div>
+				<div id="inicio" *ngIf="!tipoSelecionado?.id">
+					<div id="mobile-login">
+						<ion-row>
+							<ion-col size="12" style="text-align: center;padding:1em">
+								<img src="assets/img/logo-white.png" style="max-width: 25vw;margin:auto;">
+							</ion-col>
+						</ion-row>
+						<ion-row>
+							<ion-col>
+								<p class='descricao'
+									style="color: white !important;font-weight: bold;font-size: 1.2em;">Por gentileza,
+									selecione um tipo de acesso:</p>
+							</ion-col>
+						</ion-row>
+						<div class="loginLista" scrollY="true">
+							<div lines="none" class="card {{item.classe}}" *ngFor="let item of tipoLogins"
+								(click)="selecionarTipo(item)">
+								<h3>Sou <br /><b>{{item.label}}</b></h3>
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+			<div id="modalLogin" #modalLogin [class]="tipoSelecionado?.classe"
+				[style.display]="tipoSelecionado?.id ? 'block' : 'none'">
+				<ion-row>
+					<ion-col>
+						<ion-button fill="clear" color="primary" (click)="limparForm()">
+							<ion-icon name="arrow-back-outline"></ion-icon> Voltar
+						</ion-button>
+					</ion-col>
+				</ion-row>
+				<form name="frmLogin" #frmLogin (ngSubmit)="realizarLogin()">
+					<h3 style="color:black !important;text-align:center"><b>{{tipoSelecionado?.label}}</b>, realize o
+						login abaixo:</h3>
+					<div style="height:0; overflow:hidden">
+						<input style="opacity:0;" type="text" name="login" value="" class="" />
+						<input style="opacity:0;" type="password" name="senha" value="" class="d-" />
+					</div>
+					<ion-row>
+						<ion-col size="12">
+							<ion-button expand="block" color="primary" (click)="selecionarLogin('QRCODE')">
+								<ion-icon name="qr-code" slot="start"></ion-icon>
+								Utilizando um QR Code
+							</ion-button>
+						</ion-col>
+					</ion-row>
+					<ion-row>
+						<ion-col>
+							<p>Ou preenchendo o login e senha a seguir:</p>
+						</ion-col>
+					</ion-row>
+
+					<ion-row>
+						<ion-col>
+							<ion-item>
+								<ion-label>
+									<ion-icon name="person-outline"></ion-icon>
+								</ion-label>
+								<ion-input placeholder="Login" type="text" name="login" autocomplete="educalogin"
+									[(ngModel)]="login.usuario"></ion-input>
+							</ion-item>
+						</ion-col>
+					</ion-row>
+					<ion-row>
+						<ion-col>
+							<ion-item>
+								<ion-label>
+									<ion-icon name="lock-closed-outline"></ion-icon>
+								</ion-label>
+								<ion-input placeholder="Senha" type="password" name="senha" autocomplete="educalogin"
+									[(ngModel)]="login.senha"></ion-input>
+							</ion-item>
+						</ion-col>
+					</ion-row>
+					<ion-row>
+						<ion-col>
+							<ion-item>
+								<ion-label>
+									<ion-icon name="key-outline"></ion-icon>
+								</ion-label>
+								<ion-input placeholder="Chave de acesso" type="text" name="chave" autocomplete="chave"
+									[(ngModel)]="login.chave"></ion-input>
+							</ion-item>
+						</ion-col>
+					</ion-row>
+					<ion-row>
+						<ion-col>
+							<ion-item no-lines>
+								<ion-label>Ano letivo</ion-label>
+								<ion-select [(ngModel)]="login.ano" name="ano" okText="Selecionar"
+									cancelText="Cancelar">
+									<ion-select-option [value]="ano" *ngFor="let ano of exercicio">{{ano}}
+									</ion-select-option>
+								</ion-select>
+							</ion-item>
+						</ion-col>
+					</ion-row> 
+					<ion-row>
+						<ion-col>
+							<p>Ao entrar, você estará concordando com os nossos <a
+									[routerLink]="['/termos-de-uso']">Termos de uso</a> e <a
+									[routerLink]="['/politicas-de-privacidade']">Políticas de privacidade</a>.</p>
+						</ion-col>
+					</ion-row>
+
+					<ion-row *ngIf="cub3Svc.getVersaoApp() != ''">
+						<ion-col>
+							<p>Versão do aplicativo: {{ cub3Svc.getVersaoApp() }}</p>
+						</ion-col>
+					</ion-row>
+				</form>
+			</div>
+		</div>
+	</ng-container>
+</ion-content>
+<ion-footer>
+	<ion-toolbar #footer *ngIf="tipoSelecionado?.id">
+		<ion-button class="{{tipoSelecionado.classe}}" color="primary" (click)="realizarLogin()">
+			Entrar
+		</ion-button>
+	</ion-toolbar>
+</ion-footer>

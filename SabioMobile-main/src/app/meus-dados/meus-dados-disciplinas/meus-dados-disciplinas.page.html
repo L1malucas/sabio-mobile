@@ -1,0 +1,23 @@
+
+<cub3-header [titulo]="'Minhas<br /> <b>disciplinas</b>'" [voltar]="true"  [exibirAvatar]="false" [icone]="'book-outline'"></cub3-header>
+<ion-content>
+
+        <ion-row>
+          <ion-col>
+            <h4 class="header4">Lista de <b>disciplinas</b></h4>
+          </ion-col>
+        </ion-row>
+        <ion-list class="notify-list">
+          <ion-item *ngFor="let item of data.MOB_DISCIPLINAS; let i = index" lines="{{i == data.MOB_DISCIPLINAS.length-1 ? 'none' : ''}}">
+            <ion-row> 
+              <ion-col col-12>
+                <p>{{item.NME_DISCIPLINA}}</p>
+              </ion-col>
+            </ion-row>
+          </ion-item>
+          <ion-item  lines="none" *ngIf="data.MOB_DISCIPLINAS.length == 0">
+            <p style="text-align:center">Nenhuma informação disponível...</p>
+          </ion-item>
+      </ion-list>
+ 
+</ion-content>

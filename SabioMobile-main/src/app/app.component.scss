@@ -1,0 +1,84 @@
+ion-page {
+	&.ion-page-verde {
+	}
+}
+
+
+ion-menu {
+}
+
+.perfil-dados {
+
+    margin: 30px auto 0 auto;
+	ion-col {
+	    display: flex;
+	    flex-direction: column;  
+	    justify-content: center;
+	}
+    ion-avatar { 
+	    height: 40px;
+	    width: 40px;
+	    margin: auto;
+	    display: block;
+    }
+    a {
+    	font-size: .8em;
+    	text-decoration: none;
+    }
+    span { 
+	    font-weight: bold;
+	    text-overflow: ellipsis;
+	    letter-spacing: -.4px;
+	    overflow: hidden;
+	    max-width: 100%;
+	    display: block;
+    }
+}
+
+.menu-links {
+    padding: 15px 0;
+    ion-item {
+	    margin: 10px auto;
+    }
+	a {
+	    width: 100%;
+	    height: 100%;
+	    display: flex;
+	    align-items: center;
+	    text-decoration: none;
+	    padding-left: 20px;
+	    font-weight: bold;
+	    border-radius: 10px;
+	    cursor: pointer;
+	    ion-icon {
+	    	font-size: 1.4em;
+		    padding-right: 10px;
+	    }
+	    &:hover, &.ativo {
+		    background: var(--ion-color-primary);
+		    color: white;
+	    }
+	}
+}
+.footer-links {
+
+	a {
+	    width: 100%;
+	    height: 100%;
+	    display: flex;
+	    align-items: center;
+	    text-decoration: none;
+	    padding-left: 20px; 
+	    border-radius: 10px;
+	    font-size: .9em;
+	    cursor: pointer;
+	    ion-icon {
+	    	font-size: 1.4em;
+		    padding-right: 10px;
+	    }
+	    &:hover, &.ativo {
+		    background: var(--ion-color-primary);
+		    color: white;
+	    }
+	}
+}

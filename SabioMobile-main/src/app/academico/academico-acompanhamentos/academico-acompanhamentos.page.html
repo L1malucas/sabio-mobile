@@ -1,0 +1,58 @@
+<cub3-header [titulo]="'Acompanhamento<br /> <b>Pedagógico</b>'" [voltar]="true" [icone]="'bookmarks-outline'" [exibirAvatar]="false"></cub3-header>
+
+<ion-content>
+	<div id="container">
+		<ion-row>
+		  <ion-col>
+			<div style="display: flex; justify-content: space-between; align-items: center;">
+			  <h4 class="header4" style='margin:0'>Ficha do <b>aluno</b></h4> 
+			</div>
+		  </ion-col>
+		</ion-row>
+	  	<ion-list class="alunos-lista">
+		<ion-slides  > 
+		  <ion-slide >
+			<ion-avatar>
+			  <img src="assets/img/avatar-{{aluno.sexo == 2 ? 'menina' : 'menino'}}.jpg">
+		  </ion-avatar>
+
+		  <h2><b>{{aluno.id}}</b> <br /> {{cub3Svc.normalizeString(aluno.nomeCivil || aluno.nome)}}</h2><br />
+		  <small><b>Data de nascimento:</b><br /> {{aluno.dataNascimento | amDateFormat: 'DD/MM/YYYY'}}</small><br />
+			<small><b>Sexo:</b><br /> {{aluno.sexo == 1 ? 'Masculino' : 'Feminino'}}</small><br />
+			<small><b>Nome da mãe:</b><br /> {{cub3Svc.normalizeString(aluno.nomeMae || 'Não consta')}}</small><br />
+			<small><b>Nome do pai:</b><br /> {{cub3Svc.normalizeString(aluno.nomePai || 'Não consta')}}</small>
+		   
+		  </ion-slide> 
+		</ion-slides>
+        <!-- <ion-row>
+          <ion-col>
+            <h4 class="header4">Lista de <b>registros</b></h4>
+          </ion-col>
+        </ion-row>
+        <ion-list class="notify-list">
+        	<ng-container *ngFor="let item of aluno.acompanhamentos; let i = index">
+	          <ion-item  lines="{{i == aluno.acompanhamentos.length-1 ? 'none' : ''}}" [routerLink]="['/app/academico/academico-acompanhamento/'+aluno.IDF_ALUNO+'/'+item._id]"  >
+	            <ion-row> 
+	              <ion-col col-12>
+	                <p>Registro de acompanhamento - {{item.acompanhamento?.data | amDateFormat: 'DD/MM/YYYY HH:mm'}}</p>
+	              </ion-col>
+	            </ion-row>
+	            <ion-icon name="chevron-forward-outline" slot="end"></ion-icon>
+	          </ion-item>
+	      </ng-container>
+	          <ion-item  lines="none" *ngIf="aluno.acompanhamentos.length == 0">
+	            <p style="text-align:center">Nenhuma informação disponível...</p>
+	          </ion-item>
+      </ion-list> -->
+	  </ion-list>
+	</div> 
+
+</ion-content>
+<!-- 
+<ion-footer  >
+  <ion-toolbar #footer> 
+	    <ion-button color="primary" [routerLink]="['/app/academico/academico-acompanhamento-novo/'+aluno.IDF_ALUNO]">
+	      Adicionar registro
+	    </ion-button> 
+  </ion-toolbar>
+</ion-footer> -->

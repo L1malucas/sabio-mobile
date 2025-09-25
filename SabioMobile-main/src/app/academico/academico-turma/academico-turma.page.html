@@ -1,0 +1,377 @@
+ <cub3-header [classeF]="'bgTransparente bgTurma'" [titulo]="'Detalhes <br /> <b>'+turmaAtiva.NME_TURMA+'</b>'" [voltar]="true" [icone]="'bookmarks-outline'" [exibirAvatar]="false" [exibirDivisor]="true" [exibirVoltarLabel]="false">
+
+ <ion-row>
+	<ion-col style="display: flex;justify-content: center;align-items: center;flex-direction: column;padding:0 20px 40px 20px;" >
+	  <h4 class="header4" style='margin:0;padding:0;font-weight:bold;text-align: center;color:white;'>{{turmaAtiva.titulo}}</h4>
+	  <span style="color:white" [innerHTML]="cub3Svc.normalizeString(turmaAtiva.nomeEscola)" ></span>    
+	  <ion-chip color="light">{{cub3Svc.normalizeString(turmaAtiva.turno?.descricao)}}</ion-chip>
+	</ion-col>
+
+
+  </ion-row> 
+
+</cub3-header>
+ 
+
+<ion-content>
+	<div id="container" style="margin-top:0;background: white;border-radius: 20px 20px 0px 0px; padding: 0px 5px 0px 5pxadsdasdasasddssaddddddddd">
+	<ng-container *ngIf="dados != null && !carregando">
+		<ng-container [ngSwitch]="abaAtiva">
+ 
+			<ng-container *ngSwitchCase="'avaliacoes'">
+			        <ion-row>
+			          <ion-col>
+			            <h4 class="header4">Avaliações disponíveis <b>{{dados.NME_TURMA}}</b></h4>
+			          </ion-col>
+			        </ion-row>
+			 
+
+
+					<ion-list [ngClass]="{'slide-in': animate}" class="alunos-lista listOpcoes w-full" style="margin-top:0px; margin-bottom:20vh !important">
+						<div *ngFor="let avaliacao of dados.avaliacoes" class="w-full"> 
+								<ion-item lines="full" class="w-full" >
+								  <ion-row class="w-full" style="padding: 10px 0 5px 0" (click)="selecionarAvaliacao(avaliacao)">
+									<ion-row>
+										
+									<ion-col size="1">
+									  <div style="display: flex; justify-content: center; align-items: center; flex-direction: column; background-color: #fff6e8; padding: 10px; border-radius: 20px;">
+										<div style="font-size: .8em;">
+										  {{ avaliacao.SEQ_AVALIACAO }}
+										</div>
+									  </div>
+									</ion-col>
+									<ion-col size="11" class="details-column" style="padding-top: 10px">
+									  <b>{{ avaliacao.DES_AVALIACAO }}</b><br />
+									  <div>
+										<ion-badge color="secondary" style='margin-right: 5px'>
+										  {{avaliacao.SIT_AVALIACAO == 'FINALIZADA' ? 'Lançamentos finalizados': 'Aguardando lançamentos'}}
+										</ion-badge>
+									  </div>
+									</ion-col>
+									</ion-row> 
+								  </ion-row>
+								  <ion-button fill="none" style="position: absolute;right:0">
+									<ion-icon slot="end" color="primary" name="chevron-forward-outline"></ion-icon>
+								  </ion-button>
+								</ion-item> 
+							  
+						</div> 
+						<ion-item  lines="none" *ngIf="dados.avaliacoes.length == 0">
+						  <p style="text-align:center;width:100%">Nenhuma avaliação disponível...</p>
+						</ion-item>
+					  </ion-list>
+			<ion-fab vertical="bottom" horizontal="end" slot="fixed">
+				<ion-fab-button [routerLink]="['/app/academico/academico-avaliacao-novo/'+turmaAtiva.id]" color="danger">
+				<ion-icon name="add-circle-outline"></ion-icon>
+				</ion-fab-button>
+			</ion-fab>
+			 </ng-container>
+			<ng-container *ngSwitchCase="'aulas'">
+			        <ion-row>
+			          <ion-col>
+			            <h4 class="header4">Aulas disponíveis <b>{{dados.NME_TURMA}}</b></h4>
+			          </ion-col>
+			        </ion-row>
+
+					<div class="week-grid">
+						<div *ngFor="let day of weekDays" (click)="selectDay(day)">
+						  <span class="calendario-label">{{ day.label }}</span>
+						  <div  [ngClass]="{'selected': isSelected(day), 'event': day.hasEvent}">
+							  <span >{{ day.date.getDate() }}</span>
+							  <span *ngIf="day.hasEvent" class="event-dot"></span>
+						  </div>
+						</div>
+					  </div>
+					  
+
+					  
+			        <!-- <ion-list class="aulas-lista" *ngIf="dados.IDF_TURMA" >
+			          <ion-spinner *ngIf="carregandoAulas" color="light">   </ion-spinner> 
+			          <ng-container  *ngIf="!carregandoAulas">
+			          <ng-container *ngFor="let item of aulas">
+			          <ion-card  class="ion-activatable ripple-parent" (click)="abrirAula(item)"> 
+			            <ion-card-content   style="display: block; position: relative; overflow: hidden; background-size: cover; background-position: center center; min-height: 150px;"  >
+			              <ion-label>
+			                <span><b>{{item.DES_ASSUNTO}}</b></span><small>{{item.DES_AVALIACAO}}</small></ion-label>
+			                <ion-badge class="badge-horario">
+			                 <ion-icon name="alarm-outline"></ion-icon> {{item.DAT_AULA | amDateFormat: 'DD/MM'}}
+			                </ion-badge>
+			                <span class="id-aula">#{{item.IDF_AULA}}</span> 
+			            <ion-ripple-effect></ion-ripple-effect>
+			            </ion-card-content>
+			          
+			          </ion-card> 
+			        </ng-container>
+			      </ng-container>
+			        </ion-list> -->
+			      <small class="msg-vazio" *ngIf="(aulas == null || (aulas != null && aulas.length == 0)) && !carregandoAulas">Nenhuma aula disponível para o filtro selecionado</small>
+			    
+			 </ng-container>
+			<ng-container *ngSwitchCase="'informacoes'">
+			        <ion-row>
+			          <ion-col>
+			            <h4 class="header4">Informações <b>{{dados.NME_TURMA}}</b></h4>
+			          </ion-col>
+			        </ion-row>
+			 
+				  	<ion-list class="listOpcoes">
+						<ion-item >
+						  <ion-icon name="time-outline" color="primary"  slot="start"></ion-icon>
+						  Turno
+						  <ion-badge slot="end">{{cub3Svc.normalizeString(turmaAtiva.turno.descricao)}}</ion-badge>
+						</ion-item>
+						<ion-item lines="none" *ngIf="turmaAtiva.disciplinas && turmaAtiva.disciplinas.length > 0">
+						  <ion-icon name="albums-outline" color="primary"  slot="start"></ion-icon>
+						  Disciplina(s)
+						  <ion-badge *ngFor="let disciplina of turmaAtiva.disciplinas" slot="end">{{cub3Svc.normalizeString(disciplina.DES_DISCIPLINA)}}</ion-badge>
+						</ion-item>
+					</ion-list>  
+				</ng-container>
+			<ng-container *ngSwitchCase="'acoes'">
+
+				<ion-list style="margin-top:0px !important;padding:0px;">
+					<div class="week-grid">
+						<div *ngFor="let day of weekDays" (click)="selectDay(day)">
+						  <span class="calendario-label">{{ day.label }}</span>
+						  <div  [ngClass]="{'selected': isSelected(day), 'event': day.hasEvent}">
+							  <span >{{ day.date.getDate() }}</span>
+							  <span *ngIf="day.hasEvent" class="event-dot"></span>
+						  </div>
+						</div>
+					  </div>
+
+				</ion-list>
+				  
+				<ng-container *ngIf="!horariosCarregados;else horarios">
+					<ion-spinner  color="primary">   </ion-spinner>
+				</ng-container>
+				<ng-template #horarios>
+					
+				<ion-row>
+					<ion-col>
+					  <div style="display: flex; justify-content: space-between; align-items: center;">
+						<h4 class="header4" style='margin:0'>Aulas <b>da turma</b> 
+						  <ion-badge class="float-right">{{filteredHorarios.length > 0 ? filteredHorarios.length+' aula(s)' : 'Nenhuma aula'}} </ion-badge>
+					  </h4> 
+					  </div>
+					</ion-col>
+				  </ion-row>
+				  <ion-list [ngClass]="{'slide-in': animate}" class="alunos-lista listOpcoes w-full" style="margin-top:0px; margin-bottom:20vh !important">
+					<ng-container *ngIf="filteredHorarios.length > 0" >
+					<div *ngFor="let horario of filteredHorarios" class="w-full">
+						<div *ngFor="let disciplina of horario.disciplinas" style="">
+							<ion-item lines="full" class="w-full" (click)="selecionarAula(horario, horario.horario ? getHora(horario.horario.inicio) : getHorarioDiscipinaInicio(disciplina.horarios), horario.horario ? getHora(horario.horario.termino) : getHorarioDiscipinaInicio(disciplina.horarios, 'fim'), disciplina)">
+							  <ion-row class="w-full" style="padding: 10px 0 5px 0">
+								<ion-row>
+									
+								<ion-col size="2" *ngIf="disciplina.horarios && disciplina.horarios.length > 0">
+								  <div style="display: flex; justify-content: center; align-items: center; flex-direction: column; background-color: #fff6e8; padding: 10px; border-radius: 20px;">
+									<div style="font-size: .8em;" *ngIf="!horario.horario">
+									  {{ getHorarioDiscipinaInicio(disciplina.horarios) }}<br />{{ getHorarioDiscipinaInicio(disciplina.horarios, 'fim') }}
+									</div>
+									<div style="font-size: .8em;" *ngIf="horario.horario">
+									  {{ horario.horario.inicio | amDateFormat: 'HH:mm' }}<br />{{ horario.horario.termino | amDateFormat: 'HH:mm' }}
+									</div>
+								  </div>
+								</ion-col>
+								<ion-col size="10" class="details-column" style="padding-top: 10px">
+								  <b>{{ horario.titulo }}</b><br />
+								  <div>
+									<ion-badge color="secondary" style='margin-right: 5px'>
+									  {{ cub3Svc.normalizeString(disciplina.DES_DISCIPLINA) }}
+									</ion-badge>
+								  </div>
+								  <ng-container *ngIf="horario.assunto">
+									<ion-row class="assunto">{{ horario.assunto }}</ion-row>
+								  </ng-container>
+								  
+								</ion-col>
+								</ion-row>
+								<ion-row class="linha-check">
+								  <ng-container *ngIf="horario.conteudo && horario.conteudo.length > 0">
+									<ion-chip style="">
+									  <ion-icon name="checkmark" color="success"></ion-icon>
+									  <ion-label>Conteúdo</ion-label>
+									</ion-chip>
+								  </ng-container>
+								  <ng-container *ngIf="!horario.conteudo || (horario.conteudo && horario.conteudo.length == 0)">
+									<ion-chip style="">
+									  <ion-icon name="close" color="danger"></ion-icon>
+									  <ion-label>Conteúdo</ion-label>
+									</ion-chip>
+								  </ng-container>
+								
+								  <ng-container *ngIf="horario.assunto">
+									<ion-chip style="">
+									  <ion-icon name="checkmark" color="success"></ion-icon>
+									  <ion-label>Metodologia</ion-label>
+									</ion-chip>
+								  </ng-container>
+								  <ng-container *ngIf="!horario.assunto">
+									<ion-chip style="">
+									  <ion-icon name="close" color="danger"></ion-icon>
+									  <ion-label>Metodologia</ion-label>
+									</ion-chip>
+								  </ng-container>
+								  <ng-container *ngIf="horario.frequencia">
+									<ion-chip style="">
+									  <ion-icon name="checkmark" color="success"></ion-icon>
+									  <ion-label>Frequência</ion-label>
+									</ion-chip>
+								  </ng-container>
+								  <ng-container *ngIf="!horario.frequencia">
+									<ion-chip style="">
+									  <ion-icon name="close" color="danger"></ion-icon>
+									  <ion-label>Frequência</ion-label>
+									</ion-chip>
+								  </ng-container>
+								
+								</ion-row>
+							  </ion-row>
+							  <ion-button fill="none" style="position: absolute;right:0">
+								<ion-icon slot="end" color="primary" name="chevron-forward-outline"></ion-icon>
+							  </ion-button>
+							</ion-item>
+						  </div>
+						  
+					</div>
+				</ng-container>
+					<ion-item  lines="none" *ngIf="filteredHorarios.length == 0">
+					  <p style="text-align:center;width:100%">Nenhuma aula disponível na grade de horários selecionada...</p>
+					</ion-item>
+				  </ion-list>
+				  
+
+				<!-- <ion-list class="" >
+					<ion-card *ngFor="let aula of aulas; let i = index">
+						<ion-grid>
+						  <ion-row>
+							<ion-col size="3" style="border-right: 1px solid #ddd; display: flex; justify-content: center; align-items: center; flex-direction: column; background-color: #ddd;">
+							  <div style="font-size: 2em; font-weight:bold;color: var(--ion-color-primary)">{{aula.DAT_AULA | amDateFormat: 'DD'}}</div>
+							  <div style="font-size: 1em; font-weight:bold">{{aula.DAT_AULA | amDateFormat: 'MMM' : 'pt-br' | uppercase}}</div>
+							</ion-col>
+							<ion-col size="9">
+							  <ion-card-header>
+								<ion-card-title>Aula de <b>{{getDisciplinaName(aula.IDF_DISCIPLINA)}}</b></ion-card-title>
+							  </ion-card-header>
+							  <ion-card-content>
+								{{aula.DES_ASSUNTO}}
+							  </ion-card-content>
+							  <ion-button  style="float:right" fill="outline"  [routerLink]="['/app/academico/academico-frequencia/'+turmaAtiva.id+'/'+aula.IDF_AULA]">
+								<ion-icon name="calendar-outline"></ion-icon>
+								Frequência</ion-button>
+								<ion-button  style="float:right"  (click)="removerAula(aula)" fill="outline" color="danger">
+								  <ion-icon name="trash-outline" color="danger"></ion-icon>
+								  Excluir</ion-button>
+							</ion-col>
+						  </ion-row>
+						</ion-grid>
+					  </ion-card>
+ 
+				<ion-item  lines="none" *ngIf="aulas.length == 0">
+				  <p style="text-align:center;width:100%">Nenhuma aula registrada...</p>
+				</ion-item>
+			</ion-list> -->
+			  	<!-- <ion-list class="listOpcoes">
+
+					<ion-item  [routerLink]="['/app/academico/academico-aulas/'+turmaAtiva.id]" >
+					  <ion-label><b>Registro/Listagem de aulas</b><br /><small>Registre, lance frequência e conteúdo da aula</small></ion-label>
+					  <ion-badge slot="end"><ion-icon name="arrow-forward-outline"></ion-icon></ion-badge>
+					</ion-item>  
+					<ion-item [routerLink]="['/app/academico/academico-turma-nota-alunos/'+turmaAtiva.id]">
+					  <ion-label><b>Lançamento de notas</b><br /><small>Realize o lançamento de notas de avaliações</small></ion-label>
+					  <ion-badge slot="end"><ion-icon name="arrow-forward-outline"></ion-icon></ion-badge>
+					</ion-item> 
+					<ion-item lines="none"  [routerLink]="['/app/academico/academico-frequencia/'+turmaAtiva.id]" >
+					  <ion-label><b>Lançamento de presença</b><br /><small>Controle a frequência dos alunos</small></ion-label>
+					  <ion-badge slot="end"><ion-icon name="arrow-forward-outline"></ion-icon></ion-badge>
+					</ion-item> 
+				</ion-list>   -->
+				</ng-template>
+
+			</ng-container>
+			<ng-container *ngSwitchCase="'alunos'">
+		        <ion-row>
+		          <ion-col>
+		            <h4 class="header4">Alunos <b>da turma</b> <ion-badge class="float-right">{{dados.qtdAlunos}} alunos</ion-badge></h4>
+					   
+		          </ion-col>
+		        </ion-row>
+		 
+			  	<ion-list class="alunos-lista listOpcoes">
+					<ng-container *ngFor="let item of turmaAtiva.alunos">
+						<ion-item *ngIf="item" [routerLink]="['/app/academico/academico-acompanhamentos/'+item.id]">
+							<ion-row >
+							  <ion-col size="1"> 
+								  <ion-avatar>
+									<img src="assets/img/avatar-{{item.sexo == 2 ? 'menina' : 'menino'}}.jpg">
+								</ion-avatar>
+							  </ion-col>
+							  <ion-col size="11">
+								
+								<p class="turmaDias" style="position: relative;">
+									<ion-badge slot="end" color="secondary" style='float:right;font-size:.8em; position:absolute;right:0;bottom:2;'>{{item.id}}</ion-badge>	
+									<b style="color:black">{{cub3Svc.normalizeString(item.nome)}}</b><br />
+								<small><b>Data de nascimento:</b> {{item.dataNascimento | amDateFormat: 'DD/MM/YYYY'}}</small><br />
+								  <small><b>Sexo:</b> {{item.sexo == 1 ? 'Masculino' : 'Feminino'}}</small>
+								</p>
+							  </ion-col>
+							</ion-row>
+							</ion-item>
+					</ng-container>
+			  		
+				</ion-list> 
+			</ng-container>
+	</ng-container>
+</ng-container>
+</div>
+<ion-fab vertical="bottom" horizontal="start" slot="fixed" *ngIf="abaAtiva == 'acoes'">
+	<ion-fab-button (click)="sincronizarAulas()" color="light">
+	<ion-icon name="sync-outline" color="primary"></ion-icon>
+	</ion-fab-button>
+</ion-fab>
+<ion-fab vertical="bottom" horizontal="end" slot="fixed" *ngIf="horariosCarregados">
+	<ion-fab-button [routerLink]="['/app/academico/academico-aula-novo/'+turmaAtiva.id]" color="danger">
+	<ion-icon name="add-circle-outline"></ion-icon>
+	</ion-fab-button>
+</ion-fab>
+</ion-content>
+<ion-footer>
+	<ion-toolbar>
+	  <ion-row justify-content-between>
+		<ion-col size="3" text-center>
+		  <ion-button fill="clear" expand="full" [class.active]="abaAtiva === 'acoes'" (click)="selecionarAba('acoes')">
+			<span>
+				<ion-icon slot="icon-only" name="calendar-outline"></ion-icon>
+				<ion-label>Aulas</ion-label>
+			</span>
+		  </ion-button> 
+		</ion-col>
+		<ion-col size="3" text-center>
+		  <ion-button fill="clear" expand="full" [class.active]="abaAtiva === 'avaliacoes'" (click)="selecionarAba('avaliacoes')">
+			<span>
+				<ion-icon slot="icon-only" name="albums-outline"></ion-icon>
+				<ion-label>Avaliações</ion-label>
+			</span>
+		  </ion-button> 
+		</ion-col>
+		<ion-col size="3" text-center>
+		  <ion-button fill="clear" expand="full" [class.active]="abaAtiva === 'informacoes'" (click)="selecionarAba('informacoes')">
+			<span>
+				<ion-icon slot="icon-only" name="alert-outline"></ion-icon>
+				<ion-label>Informações</ion-label>
+			</span>
+		  </ion-button>
+		</ion-col>
+		<ion-col size="3" text-center>
+		  <ion-button fill="clear" expand="full" [class.active]="abaAtiva === 'alunos'" (click)="selecionarAba('alunos')">
+			<span>
+				<ion-icon slot="icon-only" name="people-outline"></ion-icon>
+				<ion-label>Alunos</ion-label>
+			</span>
+		  </ion-button>
+		</ion-col>
+	  </ion-row>
+	</ion-toolbar>
+  </ion-footer>
+  

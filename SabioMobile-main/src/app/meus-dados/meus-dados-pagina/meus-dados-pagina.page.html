@@ -1,0 +1,79 @@
+ 
+<cub3-header [titulo]="cub3Svc.getAppName()+'<br /> <b>Meus Dados</b>'" [voltar]="true"  [exibirAvatar]="true"></cub3-header>
+<ion-content>
+	<ng-container [ngSwitch]="usuario.perfil">
+		<!-- PROFESSOR -->
+		<ion-list class="listOpcoes" *ngSwitchCase="'PROFESSOR'">
+		  <ion-item    class="ion-activatable ripple-parent" [routerLink]="['/app/meus-dados/meus-dados-escolas']" >
+		    <ion-label><b>Escolas de atuação</b><br /><small>Lista de escolas associadas ao perfil.</small></ion-label>
+		    <ion-icon name="school-outline" slot="end"></ion-icon>
+		    <ion-ripple-effect></ion-ripple-effect>
+		  </ion-item>
+		  <ion-item  class="ion-activatable ripple-parent"  [routerLink]="['/app/meus-dados/meus-dados-disciplinas']">
+		    <ion-label><b>Minhas disciplinas</b><br /><small>Lista de disciplinas associadas ao perfil.</small></ion-label>
+		    <ion-icon name="book-outline" slot="end"></ion-icon>
+		    <ion-ripple-effect></ion-ripple-effect>
+		  </ion-item>
+		  <ion-item  lines="none"  class="ion-activatable ripple-parent"  [routerLink]="['/app/meus-dados/meus-dados-frequencia']">
+		    <ion-label><b>Minha Frequência</b><br /><small>Histórico de registro de jornada.</small></ion-label>
+		    <ion-icon name="time-outline" slot="end"></ion-icon>
+		    <ion-ripple-effect></ion-ripple-effect>
+		  </ion-item>
+		  <ion-item  lines="none"  class="ion-activatable ripple-parent"  [routerLink]="['/app/academico/academico-imc']">
+		    <ion-label><b>Cálculo de IMC</b><br /><small>Ferramenta de cálculo.</small></ion-label>
+		    <ion-icon name="calculator-outline" slot="end"></ion-icon>
+		    <ion-ripple-effect></ion-ripple-effect>
+		  </ion-item>
+		</ion-list>
+
+		<ion-list class="listOpcoes" *ngSwitchCase="'ALUNO'">
+		  <ion-item    class="ion-activatable ripple-parent" [routerLink]="['/app/aluno/aluno-meus-dados-ficha-cadastral']" >
+		    <ion-label><b>Ficha Cadastral</b><br /><small>Informações de matrícula.</small></ion-label>
+		    <ion-icon name="school-outline" slot="end"></ion-icon>
+		    <ion-ripple-effect></ion-ripple-effect>
+		  </ion-item>
+		  <ion-item  class="ion-activatable ripple-parent"  [routerLink]="['/app/aluno/aluno-boletim']">
+		    <ion-label><b>Boletim</b><br /><small>Notas e frequência do ano letivo.</small></ion-label>
+		    <ion-icon name="list-outline" slot="end"></ion-icon>
+		    <ion-ripple-effect></ion-ripple-effect>
+		  </ion-item>
+		  <ion-item  class="ion-activatable ripple-parent"  [routerLink]="['/app/aluno/aluno-conteudo-programatico']">
+		    <ion-label><b>Conteúdo programático</b><br /><small>Meu conteúdo programático do ano letivo.</small></ion-label>
+		    <ion-icon name="book-outline" slot="end"></ion-icon>
+		    <ion-ripple-effect></ion-ripple-effect>
+		  </ion-item>
+		  <ion-item  class="ion-activatable ripple-parent"  [routerLink]="['/app/aluno/aluno-meus-dados-frequencia']">
+		    <ion-label><b>Frequência</b><br /><small>Frequência em sala e no transporte.</small></ion-label>
+		    <ion-icon name="alert-outline" slot="end"></ion-icon>
+		    <ion-ripple-effect></ion-ripple-effect>
+		  </ion-item>
+		  <!-- <ion-item    class="ion-activatable ripple-parent"  [routerLink]="['/app/aluno/aluno-meus-dados-avaliacoes']">
+		    <ion-label><b>Avaliações</b><br /><small>Registros de avaliações.</small></ion-label>
+		    <ion-icon name="bar-chart-outline" slot="end"></ion-icon>
+		    <ion-ripple-effect></ion-ripple-effect>
+		  </ion-item> -->
+		  <ion-item    class="ion-activatable ripple-parent"  [routerLink]="['/app/aluno/aluno-rematricula']">
+		    <ion-label><b>Re-matrícula</b><br /><small>Pré-reserva de matrícula.</small></ion-label>
+		    <ion-icon name="receipt-outline" slot="end"></ion-icon>
+		    <ion-ripple-effect></ion-ripple-effect>
+		  </ion-item>
+		  <ion-item    class="ion-activatable ripple-parent"  [routerLink]="['/app/aluno/aluno-meus-dados-ocorrencias']">
+		    <ion-label><b>Ocorrências</b><br /><small>Registros de ocorrências.</small></ion-label>
+		    <ion-icon name="clipboard-outline" slot="end"></ion-icon>
+		    <ion-ripple-effect></ion-ripple-effect>
+		  </ion-item>
+		  <ion-item  lines="none"  class="ion-activatable ripple-parent"  [routerLink]="['/app/academico/academico-imc']">
+		    <ion-label><b>Cálculo de IMC</b><br /><small>Ferramenta de cálculo.</small></ion-label>
+		    <ion-icon name="calculator-outline" slot="end"></ion-icon>
+		    <ion-ripple-effect></ion-ripple-effect>
+		  </ion-item>
+		</ion-list>
+
+	<ion-list class="listOpcoes">
+	  <ion-item (click)="logout()" lines="none">
+	    <ion-label><b>Finalizar sessão</b><br /><small>Realiza logout e retorna para a tela de login.</small></ion-label>
+	    <ion-icon name="exit-outline" slot="end"></ion-icon>
+	  </ion-item>
+	</ion-list>
+	</ng-container>
+</ion-content> 

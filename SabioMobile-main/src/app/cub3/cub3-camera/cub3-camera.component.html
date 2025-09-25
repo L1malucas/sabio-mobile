@@ -1,0 +1,20 @@
+<div id="preview" #preview [ngClass]="{'capturandoFoto': capturandoFoto}">
+    <div id="publisher"></div>
+    <div *ngIf="isInitializing">Iniciando câmera...</div>
+</div>
+<div id="preview-stream">
+    <div id="desktop"></div>
+</div>
+
+    <div id="erro"  *ngIf="permissao != 'granted'">
+    	<ng-container *ngIf="permissao == 'carregando' || trocandoCamera">
+    		<ion-spinner></ion-spinner>
+    	</ng-container>
+    	<ng-container *ngIf="permissao == 'denied' && !trocandoCamera">
+	    	<ion-icon name="videocam-outline"></ion-icon> 
+	    	Permissão não concedida.<br /> 
+	    	Por gentileza, forneça permissão para a câmera e tente novamente. <br />
+	    	<ion-button color="warning" (click)="solicitarPermissao()">Tentar novamente</ion-button>
+	    </ng-container>
+    </div>
+<canvas id="canvas" #canvas style='display:none'></canvas> 

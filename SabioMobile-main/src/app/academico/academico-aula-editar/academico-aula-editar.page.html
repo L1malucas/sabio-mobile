@@ -1,0 +1,84 @@
+ <cub3-header [titulo]="'Editar <br /> <b>aula</b>'" [voltar]="true" [icone]="'bookmarks-outline'" [exibirAvatar]="false"></cub3-header>
+<ion-content>  
+		<ion-slides #slides pager="true" (ionSlideDidChange)="onSlideDidChange($event)"> 
+			
+			<ion-slide >
+				<h2 style="color:var(--ion-color-primary)">Seleção de período</h2>
+				<ng-container *ngIf="carregandoConteudos;else conteudos">
+					<ion-spinner style="margin-top:50px"  color="primary">   </ion-spinner>
+				</ng-container>
+				<ng-template #conteudos>
+					<small>Para continuar, por gentileza, selecione o período:</small>
+					<ion-label>Período</ion-label>
+					<ion-radio-group (ngModelChange)="getConteudos($event)" [(ngModel)]="dados.NRO_AVALIACAO" class="w-full" *ngIf="turmaAtiva?.etapa?.avaliacoes">
+					  <ng-container *ngFor="let item of turmaAtiva.etapa.avaliacoes; let i = index"> 
+							<ion-item lines="none" class="w-full">
+							  <ion-label class="ion-text-wrap">
+								<h2>{{cub3Svc.normalizeString(item.DES_AVALIACAO)}}</h2>
+							  </ion-label>
+							  <ion-radio slot="end" name="radio" [value]="item.NRO_AVALIACAO"></ion-radio>
+							</ion-item> 
+					  </ng-container>
+					</ion-radio-group>
+				</ng-template>
+			</ion-slide>
+			<ion-slide *ngIf="ListarConteudo().length > 0" >
+				<h2 style="color:var(--ion-color-primary)">Seleção de conteúdo programático</h2>
+				<ng-container *ngIf="carregandoConteudos; else bncc">
+					<ion-spinner style="margin-top:50px" color="primary"></ion-spinner>
+				</ng-container>
+				<ng-template #bncc>
+					<small>Para continuar, por gentileza, utilize a pesquisa abaixo para filtrar o conteúdo desejado:</small>
+					<ion-searchbar [(ngModel)]="busca" show-clear-button="focus" placeholder="Pesquisar..."></ion-searchbar>
+	
+					<ion-list [hidden]="activeSlideIndex != 1">
+					<ng-container *ngFor="let conteudo of listaParcial; let i = index">
+						<ion-card class="custom-card">
+						<ion-card-content style="padding:0">
+							<ion-item lines="none">
+							<ion-label class="custom-label">
+								<h2 style="font-weight: bold;">
+								<ng-container *ngIf="conteudo.SEQ_CONTEUDO">{{conteudo.SEQ_CONTEUDO}})</ng-container>{{(conteudo.COD_BNCC || 'Conteúdo')}}
+								</h2>
+								<p *ngIf="!conteudo.selecionado; else truncatedContent">{{conteudo.DES_CONTEUDO}}</p>
+								<ng-template #truncatedContent>
+								<p class="truncated">{{conteudo.DES_CONTEUDO}}</p>
+								</ng-template>
+								<ion-chip style="font-weight: bold; font-size:.8em">{{cub3Svc.normalizeString(conteudo.DES_DISCIPLINA)}}</ion-chip>
+								<ion-chip style="font-weight: bold; font-size:.8em">{{(conteudo.NRO_HORAAULA)}} minutos</ion-chip>
+							</ion-label>
+							<ion-checkbox slot="end" [(ngModel)]="conteudo.selecionado" (ionChange)="selecionarConteudo(conteudo)"></ion-checkbox>
+							</ion-item>
+						</ion-card-content>
+						</ion-card>
+					</ng-container>
+					
+					<ion-infinite-scroll (ionInfinite)="loadData($event)">
+						<ion-infinite-scroll-content loadingSpinner="bubbles" loadingText="Carregando mais conteúdo..."></ion-infinite-scroll-content>
+					</ion-infinite-scroll>
+					</ion-list>
+				</ng-template>
+				</ion-slide>
+	
+			<ion-slide>
+				<h2 style="color:var(--ion-color-primary)">Preenchimento do conteúdo livre</h2>
+				<small>Descreva a metodologia, objetos de conhecimento e conteúdo de forma livre (caso aplicável):</small>
+				<br />
+				<ion-label style="margin-top:10px">Metodologia</ion-label>
+				<ion-item class="w-full" style="margin:10px 0">
+					<ion-textarea placeholder="Descreva a metodologia utilizada *"   name="assunto" [(ngModel)]="dados.DES_ASSUNTO"></ion-textarea>
+				  </ion-item>
+				  <ion-label>Recursos</ion-label>
+				  <ion-item  class="w-full" style="margin:10px 0">
+					<ion-textarea placeholder="Descreva a respeito dos recursos" name="assunto" [(ngModel)]="dados.OBSERVACAO"></ion-textarea>
+				  </ion-item>
+			</ion-slide>
+		</ion-slides>
+		<ion-fab vertical="bottom" horizontal="end" slot="fixed">
+		  <ion-fab-button (click)="avancar()" color="success">
+			<ion-icon name="checkmark-circle-outline"></ion-icon>
+		  </ion-fab-button>
+		</ion-fab>
+</ion-content>
+
+ 
