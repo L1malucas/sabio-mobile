@@ -15,6 +15,7 @@
     *   [3.5. Módulo Notificações (`@src/app/notificacoes`)](#35-módulo-notificações-srcappnotificacoes)
     *   [3.6. Módulo Sincronização (`@src/app/sincronizacao`)](#36-módulo-sincronização-srcappsincronizacao)
     *   [3.8. Módulo Intro (`@src/app/intro`)](#38-módulo-intro-srcappintro)
+*   [4. Comunicação Externa e APIs](#4-comunicação-externa-e-apis)
 *   [5. Requisitos de Permissões](#5-requisitos-de-permissões)
 *   [6. Módulo Core - Cub3 (`@src/app/cub3`)](#6-módulo-core---cub3-srcappcub3)
 *   [7. Banco de Dados](#7-banco-de-dados)
@@ -251,7 +252,7 @@ O módulo é composto por uma vasta coleção de páginas e submódulos, cada um
 
 *   **Sincronização e Dados Offline (`academico-aba3` e `academico-aba4`):**
     *   A presença de botões como "Sincronizar sessão" e "Limpar aulas" em `academico-aba4.page.ts` confirma a arquitetura híbrida (online/offline) da aplicação.
-    *   A função `sincronizar()` busca os dados mais recentes do backend (`educanet/profissional/mobile`) e os salva localmente usando `StorageUtils.setItem("escolas", ...)`.
+    *   A função `sincronizar()` busca os dados mais recentes do backend (`educanet/profissional/mobile`) e os salva localmente usando `StorageUtils.setItem("escolas", ...) `.
     *   A função `limparDados()` remove registros das tabelas locais (`MOB_REGISTRO_AULA`, `MOV_REGISTRO_FREQUENCIA`), reforçando o controle manual do cache de dados pelo usuário.
 
 #### 3.3.3. Pontos de Atenção e Recomendações (Módulo Acadêmico)
@@ -402,6 +403,98 @@ O módulo é composto por um único componente, `IntroPage`, que serve como o pr
     *   A permissão de **Câmera** deve ser solicitada quando o usuário tentar escanear um QR Code no `LoginPage`.
     *   A permissão de **Localização** deve ser solicitada quando o professor acessar a tela de "Registro de Jornada" no módulo `Meus Dados`.
     *   A lógica de solicitação de permissões deve ser removida do `IntroPage` e movida para os componentes específicos que dependem desses recursos nativos.
+
+## 4. Comunicação Externa e APIs
+
+Esta seção detalha a arquitetura de comunicação do aplicativo com serviços externos, incluindo as APIs, os endpoints e os métodos de requisição utilizados. A comunicação é um pilar para as funcionalidades de login, sincronização de dados e operações em tempo real.
+
+### 4.1. Visão Geral e Autenticação
+
+A comunicação externa é quase inteiramente centralizada no `Cub3SvcProvider`. A aplicação se comunica com duas APIs principais, indicando uma possível arquitetura de microsserviços ou uma transição de um sistema legado para um mais moderno.
+
+*   **API Principal (Legada):** `https://api.portaleducanet.com.br/`
+*   **API Node.js:** `https://node.educanethomeclass.com.br:49996/`
+
+O `Cub3SvcProvider` utiliza dois clientes HTTP diferentes, dependendo do contexto de execução:
+*   **`@angular/common/http` (`httpo`):** Usado principalmente para chamadas à API Node.js e em contextos de navegador.
+*   **`@ionic-native/http/ngx` (`http`):** Usado para garantir a comunicação em ambientes nativos (iOS/Android), lidando com restrições de CORS de forma mais eficaz.
+
+#### 4.1.1. Fluxo de Autenticação
+
+A autenticação é híbrida, utilizando tanto um token JWT quanto o envio direto de credenciais, dependendo do endpoint.
+
+1.  **Obtenção do Token:** O processo de login na API Node.js (`/login/mobile`) retorna um token de autenticação, que é armazenado localmente via `StorageUtils.getToken()`.
+2.  **Autenticação via Token:** Para a maioria das requisições à API Node.js, o token é enviado no cabeçalho `Authorization`.
+    *   **Exemplo:** `Authorization: <token>`
+3.  **Autenticação via Credenciais:** Diversas requisições para a API Legada, principalmente as de sincronização, não utilizam o token. Em vez disso, enviam um payload contendo `usuario`, `senha` e `chave_acesso` em cada chamada. Este é um padrão de segurança mais fraco.
+
+### 4.2. Detalhamento dos Endpoints HTTP
+
+Abaixo está uma análise detalhada dos principais endpoints, incluindo método, descrição, arquivo fonte e detalhes da requisição.
+
+---
+
+#### 4.2.1. API Node.js (`https://node.educanethomeclass.com.br:49996/`)
+
+| Endpoint | Método | Descrição | Arquivo Fonte | Detalhes da Requisição (Payload/Params) |
+| :--- | :--- | :--- | :--- | :--- |
+| `/login/mobile` | `POST` | Autentica o usuário (professor) e retorna um token JWT. | `cub3/cub3-svc/cub3-svc.ts` | **Header:** `Content-Type: application/json`.<br>**Payload:** `{ "usuario": "...", "senha": "...", "chave": "...", "ano": "...", "app": "educanet" }` |
+| `/loginInstrutor` | `POST` | Variação do login para o tipo "instrutor". | `cub3/cub3-svc/cub3-svc.ts` | **Header:** `Content-Type: application/json`.<br>**Payload:** Objeto com dados do instrutor. |
+| `/loginAluno` | `POST` | Variação do login para o tipo "aluno". | `cub3/cub3-svc/cub3-svc.ts` | **Header:** `Content-Type: application/json`.<br>**Payload:** Objeto com dados do aluno. |
+| `/verificarSessao` | `GET` | Verifica se o token de sessão atual é válido. | `cub3/cub3-svc/auth.service.ts` | **Header:** `Authorization: <token>`.<br>**Params:** Nenhum. |
+| `/validarFacial/v2` | `POST` | Submete uma imagem para validação biométrica facial do usuário. | `cub3/cub3-svc/cub3-svc.ts` | **Header:** `Content-Type: application/x-www-form-urlencoded`.<br>**Payload:** `idUsuario`, `candidate` (imagem em base64). |
+| `/educanet/aulas/mobile/` | `PUT` | Envia um lote de aulas e frequências registradas offline. | `cub3/cub3-svc/cub3-svc.ts` | **Header:** `Content-Type: application/x-www-form-urlencoded`, `Authorization: <token>`.<br>**Payload:** `usuario`, `senha`, `chave_acesso`, `mob_registro_aula: JSON.stringify({ MOB_REGISTRO_AULA: [...] })`. |
+| `/quiz/{...}` | `GET`/`POST` | Realiza operações de CRUD para a funcionalidade de Quizzes (`listar`, `novo`, `atualizar`, `deletar`, `visualizar`). | `academico/academico-quizz/...` | **Header:** `Authorization: <token>`.<br>**Payload (POST):** Objeto com dados do quiz ou `{id: ...}` para deleção. <br>**Params (GET):** `?id=...` para visualizar. |
+| `/atividades/{...}` | `GET`/`POST` | Realiza operações de CRUD para a funcionalidade de Atividades (`listar`, `novo`, `atualizar`, `deletar`, `visualizar`). | `academico/academico-atividades/...` | **Header:** `Authorization: <token>`.<br>**Payload (POST):** Objeto com dados da atividade ou `{id: ...}` para deleção. <br>**Params (GET):** `?id=...` para visualizar. |
+| `/atividades/chat/novo` | `POST` | Envia uma nova mensagem no chat de uma atividade. | `academico/academico-atividade-visualizar/...` | **Header:** `Authorization: <token>`.<br>**Payload:** `{ id_atividade: ..., id_usuario: ..., mensagem: "..." }` |
+| `/aulas/chat/novo` | `POST` | Envia uma nova mensagem no chat de uma aula/transmissão. | `cub3/cub3-video-participantes/...` | **Header:** `Authorization: <token>`.<br>**Payload:** `{ id_aula: ..., id_usuario: ..., mensagem: "..." }` |
+| `/arquivo` | `GET` | Atua como um proxy para servir/baixar arquivos. | `academico/academico-aba1/academico-aba1.page.ts` | **Header:** `Authorization: <token>`.<br>**Params:** `?url=...` (URL do arquivo a ser baixado). |
+| `/suporte/uploadArquivo` | `POST` | Realiza o upload de um arquivo genérico. | `academico/academico-atividade-novo/...` | **Header:** `Authorization: <token>`.<br>**Payload:** `FormData` com o arquivo. |
+
+---
+
+#### 4.2.2. API Principal/Legada (`https://api.portaleducanet.com.br/`)
+
+| Endpoint | Método | Descrição | Arquivo Fonte | Detalhes da Requisição (Payload/Params) |
+| :--- | :--- | :--- | :--- | :--- |
+| `/login/chaves-acesso/` | `GET` | Obtém a lista de chaves de acesso (instituições) disponíveis. | `login/login.page.ts` | **Params:** Nenhum. |
+| `/profissional/logar/` | `POST` | Sincroniza os dados gerais do profissional (turmas, alunos, etc.). | `cub3/cub3-svc/cub3-svc.ts` | **Header:** `Content-Type: application/x-www-form-urlencoded`.<br>**Payload:** `chave_acesso`, `ano_letivo`, `usuario`, `senha`. |
+| `/profissional/aluno/ocorrencia/` | `POST` | Envia registros de ocorrências feitas offline. | `cub3/cub3-svc/cub3-svc.ts` | **Header:** `Content-Type: application/x-www-form-urlencoded`.<br>**Payload:** `usuario`, `senha`, `chave_acesso`, `mob_ocorrencia: JSON.stringify({ MOB_OCORRENCIA: [...] })`. |
+| `/profissional/turma/aluno/avaliacao/nota/` | `POST` | Envia as notas de uma avaliação. | `cub3/cub3-svc/cub3-svc.ts` | **Header:** `Content-Type: application/x-www-form-urlencoded`.<br>**Payload:** `usuario`, `senha`, `chave_acesso`, `ano_letivo`, `avaliacao_nota: JSON.stringify({ MOB_AVALIACOES_ALUNOS: [...] })`. |
+| `/profissional/frequencia/` | `POST` | Registra o ponto do professor (entrada/saída). | `cub3/cub3-svc/cub3-svc.ts` | **Header:** `Content-Type: application/x-www-form-urlencoded`.<br>**Payload:** `usuario`, `senha`, `chave_acesso`, `mob_prof_frq: JSON.stringify({ MOB_PROF_FRQ: [...] })`. |
+| `/profissional/plano_aula/{...}` | `GET` | Obtém os planos de aula do professor. | `cub3/cub3-svc/cub3-svc.ts` | **Params:** A URL é montada com `chave_acesso`, `usuario`, `senha`, `ano_letivo`. |
+| `/homeclass_alunos/{...}` | `GET` | Busca alunos de uma turma específica para o Homeclass. | `academico/academico-atividade-visualizar/...` | **Params:** A URL é montada com a chave da instituição, ano letivo e ID da turma. |
+
+### 4.3. Comunicação via WebSocket (Não utilizada)
+
+O arquivo `app.module.ts` contém a configuração para uma conexão via WebSocket utilizando a biblioteca `ngx-socket-io`.
+
+*   **URL do Servidor:** `http://[NODE_URL]:49994`
+*   **Transporte:** `websocket`
+
+Apesar da infraestrutura estar configurada e uma classe `SocketLocal` ter sido criada para injeção de dependência, **nenhuma parte do código-fonte da aplicação efetivamente utiliza esta conexão**. Não foram encontradas chamadas aos métodos `socket.emit()`, `socket.on()` ou `socket.fromEvent()`.
+
+**Conclusão:** A funcionalidade de WebSocket foi planejada ou iniciada, mas está atualmente inativa ou foi abandonada.
+
+### 4.4. Comunicação via FTP (Não utilizada)
+
+A lista de dependências do projeto inclui o plugin `cordova-plugin-ftp` e o wrapper `@ionic-native/ftp/ngx`. No entanto, uma busca completa pelo código **não revelou qualquer uso funcional** deste plugin.
+
+**Conclusão:** O plugin de FTP é uma dependência órfã, provavelmente um resquício de uma funcionalidade antiga ou que não foi implementada.
+
+### 4.5. Pontos de Atenção e Recomendações
+
+1.  **Autenticação Inconsistente e Insegura:** O uso simultâneo de tokens e credenciais em texto plano no corpo da requisição é uma falha de segurança e um forte indicativo de débito técnico. A API legada, em particular, depende de um padrão de autenticação obsoleto e inseguro.
+    *   **Recomendação Crítica:** Padronizar toda a autenticação para usar o token JWT no cabeçalho `Authorization` (Bearer Token). A API legada deve ser atualizada para validar este token, eliminando o envio de senhas em cada requisição.
+
+2.  **Duplicidade de APIs:** A existência de duas APIs com responsabilidades sobrepostas (ambas lidam com dados pedagógicos) aumenta a complexidade da manutenção e do fluxo de dados.
+    *   **Recomendação:** Avaliar a possibilidade de unificar a comunicação em uma única API Gateway ou migrar completamente as funcionalidades legadas para a API Node.js, a fim de simplificar a arquitetura.
+
+3.  **Múltiplos Formatos de Requisição:** O código utiliza tanto `application/json` quanto `application/x-www-form-urlencoded`, muitas vezes enviando JSON stringificado dentro de um campo de formulário, o que é uma prática incomum e ineficiente.
+    *   **Recomendação:** Padronizar o formato de comunicação, preferencialmente utilizando `Content-Type: application/json` para todas as requisições. Os payloads complexos devem ser enviados como objetos JSON nativos, não como strings dentro de outro formato.
+
+4.  **Dependências Não Utilizadas:** A presença de código e dependências para WebSocket e FTP que não são utilizados aumenta o *bundle* final da aplicação e a complexidade do projeto sem agregar valor.
+    *   **Recomendação:** Remover as dependências (`ngx-socket-io`, `@ionic-native/ftp/ngx`) e suas configurações associadas para limpar a base de código.
 
 ## 5. Requisitos de Permissões
 
@@ -556,122 +649,7 @@ A integridade do banco de dados é mantida por um uso consistente de chaves prim
 #### 7.2.4. Diagrama de Entidade-Relacionamento (ER)
 O diagrama abaixo ilustra a estrutura completa do banco de dados, incluindo todas as tabelas e seus relacionamentos.
 
-    ```mermaid
-    erDiagram
-        %% Entidades Principais
-        MOB_LOGIN {
-            int IDF_PROFISSIONAL PK "ID do Profissional"
-            string NME_PROFISSIONAL "Nome"
-        }
-        MOB_ALUNOS {
-            int IDF_ALUNO PK "ID do Aluno"
-            string NME_ALUNO "Nome"
-        }
-        MOB_ESCOLA {
-            int IDF_ESCOLA PK "ID da Escola"
-            string NME_ESCOLA "Nome"
-        }
-        MOB_TURMAS {
-            int IDF_TURMA PK "ID da Turma"
-            string NME_TURMA "Nome"
-            int IDF_ETAPA FK "ID da Etapa"
-        }
-        MOB_DISCIPLINAS {
-            int IDF_DISCIPLINA PK "ID da Disciplina"
-            string NME_DISCIPLINA "Nome"
-        }
-        MOB_ETAPAS {
-            int IDF_ETAPA PK "ID da Etapa"
-            string DES_ETAPA "Descrição"
-        }
 
-        %% Tabelas Transacionais
-        MOB_REGISTRO_AULA {
-            int IDF_AULA PK "ID da Aula"
-            int IDF_TURMA FK
-            int IDF_DISCIPLINA FK
-            int IDF_PROFISSIONAL FK
-            string DES_ASSUNTO "Assunto"
-        }
-        MOV_REGISTRO_FREQUENCIA {
-            int IDF_FREQUENCIA PK "ID da Frequência"
-            int IDF_AULA FK
-            int IDF_ALUNO FK
-            string SIT_ALUNO "Situação"
-        }
-        MOB_AVALIACAO {
-            int IDF_AVALIACAO PK "ID da Avaliação"
-            int IDF_TURMA FK
-            int IDF_DISCIPLINA FK
-            string DES_AVALIACAO "Descrição"
-        }
-        MOB_AVALIACAO_NOTA {
-            int IDF_AVALIACAO PK,FK
-            int IDF_ALUNOESCOLA PK,FK
-            real NOTA_AVALIACAO "Nota"
-            int IDF_CONCEITO FK
-            int IDF_JUSTIFICATIVA FK
-        }
-        MOB_OCORRENCIA {
-            int IDF_OCORRENCIA_LOCAL PK "ID Local"
-            int IDF_OCORRENCIA FK "ID do Tipo"
-            int IDF_ALUNO FK
-            string TXT_OCORRENCIA "Texto"
-        }
+![Diagrama](mermaid-diagram-2025-09-26-134648.png)
 
-        %% Tabelas de Junção
-        MOB_PROF_ESCOLA {
-            int IDF_PROFISSIONAL PK,FK
-            int IDF_ESCOLA PK,FK
-            int ANO_LETIVO PK "Ano"
-        }
-        MOB_PROF_TURMAS {
-            int IDF_PROFISSIONAL PK,FK
-            int IDF_TURMA PK,FK
-            int ANO_LETIVO PK "Ano"
-        }
-        MOB_TURMAS_ALUNOS {
-            int IDF_ALUNOESCOLA PK "ID Matrícula"
-            int IDF_TURMA FK
-            int IDF_ALUNO FK
-            int IDF_ESCOLA FK
-        }
-
-        %% Tabelas Auxiliares (Catálogos)
-        MOB_OCORRENCIAS {
-            int IDF_OCORRENCIA PK "ID Tipo Ocorrência"
-            string DES_OCORRENCIA "Descrição"
-        }
-        MOB_CONCEITOS {
-            int IDF_CONCEITO PK "ID Conceito"
-            string DES_CONCEITO "Descrição"
-        }
-        MOB_JUSTIFICATIVA {
-            int IDF_JUSTIFICATIVA PK "ID Justificativa"
-            string DES_JUSTIFICATIVA "Descrição"
-        }
-
-        %% Relacionamentos
-        MOB_LOGIN      ||--|{ MOB_PROF_ESCOLA : "leciona em"
-        MOB_ESCOLA     ||--|{ MOB_PROF_ESCOLA : "tem"
-        MOB_LOGIN      ||--|{ MOB_PROF_TURMAS : "leciona para"
-        MOB_TURMAS     ||--|{ MOB_PROF_TURMAS : "tem"
-        MOB_ESCOLA     ||--|{ MOB_TURMAS_ALUNOS : "contém"
-        MOB_TURMAS     ||--|{ MOB_TURMAS_ALUNOS : "agrupa"
-        MOB_ALUNOS     ||--|{ MOB_TURMAS_ALUNOS : "está em"
-        MOB_ETAPAS     ||--|{ MOB_TURMAS : "pertence a"
-        MOB_TURMAS     ||--|{ MOB_AVALIACAO : "tem"
-        MOB_DISCIPLINAS||--|{ MOB_AVALIACAO : "é de"
-        MOB_AVALIACAO  ||--|{ MOB_AVALIACAO_NOTA : "tem notas"
-        MOB_TURMAS_ALUNOS ||--|{ MOB_AVALIACAO_NOTA : "recebe nota"
-        MOB_TURMAS     ||--|{ MOB_REGISTRO_AULA : "tem aulas de"
-        MOB_DISCIPLINAS||--|{ MOB_REGISTRO_AULA : "tem aulas de"
-        MOB_LOGIN      ||--|{ MOB_REGISTRO_AULA : "ministra"
-        MOB_REGISTRO_AULA ||--|{ MOV_REGISTRO_FREQUENCIA : "registra"
-        MOB_ALUNOS     ||--|{ MOV_REGISTRO_FREQUENCIA : "tem frequência em"
-        MOB_ALUNOS     ||--|{ MOB_OCORRENCIA : "tem"
-        MOB_OCORRENCIAS ||--|{ MOB_OCORRENCIA : "é do tipo"
-        MOB_CONCEITOS ||--|{ MOB_AVALIACAO_NOTA : "usa"
-        MOB_JUSTIFICATIVA ||--|{ MOB_AVALIACAO_NOTA : "usa"
-    ```
-
+```
