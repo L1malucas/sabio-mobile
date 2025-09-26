@@ -3,8 +3,10 @@
 ## Sumário
 
 *   [1. Introdução](#1-introdução)
-*   [2. Arquitetura e Módulos Principais](#2-arquitetura-e-módulos-principais)
-    *   [2.1. Módulos Pendentes de Análise Detalhada](#21-módulos-pendentes-de-análise-detalhada)
+*   [2. Arquitetura e Tecnologias](#2-arquitetura-e-tecnologias)
+    *   [2.1. Arquitetura em Camadas (Visão Não-Técnica)](#21-arquitetura-em-camadas-visão-não-técnica)
+    *   [2.2. Arquitetura Técnica e Tecnologias](#22-arquitetura-técnica-e-tecnologias)
+    *   [2.3. Módulos Principais da Aplicação](#23-módulos-principais-da-aplicação)
 *   [3. Análise Detalhada por Módulo](#3-análise-detalhada-por-módulo)
     *   [3.1. Módulo de Login (`@src/app/login`)](#31-módulo-de-login-srcapplogin)
     *   [3.2. Módulo Meus Dados (`@src/app/meus-dados`)](#32-módulo-meus-dados-srcappmeus-dados)
@@ -13,9 +15,9 @@
     *   [3.5. Módulo Notificações (`@src/app/notificacoes`)](#35-módulo-notificações-srcappnotificacoes)
     *   [3.6. Módulo Sincronização (`@src/app/sincronizacao`)](#36-módulo-sincronização-srcappsincronizacao)
     *   [3.8. Módulo Intro (`@src/app/intro`)](#38-módulo-intro-srcappintro)
-*   [4. Tecnologias e Dependências](#4-tecnologias-e-dependências)
 *   [5. Requisitos de Permissões](#5-requisitos-de-permissões)
 *   [6. Módulo Core - Cub3 (`@src/app/cub3`)](#6-módulo-core---cub3-srcappcub3)
+*   [7. Banco de Dados](#7-banco-de-dados)
 
 ---
 
@@ -25,7 +27,48 @@ Este documento apresenta uma análise técnica objetiva do código-fonte do apli
 
 Este é um documento evolutivo e será atualizado à medida que a análise dos módulos progride.
 
-## 2. Arquitetura e Módulos Principais
+## 2. Arquitetura e Tecnologias
+
+Esta seção descreve a arquitetura geral do aplicativo Sábio, desde uma perspectiva conceitual até os detalhes técnicos das tecnologias utilizadas.
+
+### 2.1. Arquitetura em Camadas (Visão Não-Técnica)
+
+Podemos imaginar a arquitetura do aplicativo como um restaurante bem estruturado:
+
+*   **O Salão de Atendimento (Frontend - `src/app`):** Esta é a parte do aplicativo que o usuário vê e com a qual interage — as telas, os botões e os menus. Cada módulo principal (`login`, `academico`, `meus-dados`) funciona como uma área diferente do salão: a recepção onde você se identifica, a área principal onde as atividades acontecem, e uma sala de funcionários para dados pessoais.
+
+*   **A Cozinha Central (Backend Services - Módulo `cub3`):** Nos bastidores, há uma grande cozinha que prepara tudo. Quando um usuário clica em um botão no "Salão", um pedido é enviado para a "Cozinha". Esta cozinha é responsável por buscar dados, aplicar regras de negócio e entregar o resultado pronto para ser exibido. Atualmente, a cozinha do Sábio é um único e grande chef (`Cub3SvcProvider`) que faz de tudo, desde preparar os pratos até lavar a louça, o que pode gerar sobrecarga.
+
+*   **A Despensa e Geladeira (Banco de Dados Local - SQLite):** Para funcionar mesmo sem entregas (internet), o restaurante mantém uma despensa bem abastecida. O aplicativo faz o mesmo, guardando todos os dados essenciais (alunos, turmas, notas) em um banco de dados local no celular. Isso permite que o "chef" continue trabalhando e servindo os clientes mesmo que a conexão com o mundo exterior caia.
+
+*   **Os Garçons (Capacitor):** São eles que fazem a ponte entre o restaurante e o mundo real. Quando o aplicativo precisa usar a câmera do celular para ler um QR Code ou o GPS para registrar a localização do professor, é o "garçom" (Capacitor) que busca essa informação no dispositivo e a entrega para a "Cozinha" ou para o "Salão".
+
+### 2.2. Arquitetura Técnica e Tecnologias
+
+O aplicativo é uma aplicação móvel híbrida, construída sobre um stack de tecnologias web modernas e empacotada para rodar nativamente em dispositivos móveis.
+
+*   **Framework Base:** O núcleo da aplicação é construído com **`@angular/core`** (~9.1.6) e **`@ionic/angular`** (^5.0.0). 
+    *   **Angular** fornece a estrutura de componentes, injeção de dependência e o ferramental para construir uma Single-Page Application (SPA).
+    *   **Ionic** atua sobre o Angular, oferecendo uma rica biblioteca de componentes de UI (botões, listas, abas, etc.) otimizados para a aparência e o comportamento de aplicativos móveis.
+
+*   **Ponte Nativa (Native Bridge):** A comunicação entre o código web (Angular/Ionic) e as funcionalidades nativas do dispositivo (câmera, GPS, sistema de arquivos) é gerenciada pelo **`@capacitor/core`** (3.2.2). Ele substitui o antigo Cordova e permite que o aplicativo acesse recursos do hardware de forma moderna e performática.
+
+*   **Persistência de Dados (Armazenamento Local):**
+    *   **Banco de Dados Relacional:** A principal forma de armazenamento é um banco de dados **SQLite**, gerenciado pelo plugin **`@capacitor-community/sqlite`** (^3.7.0). Ele é responsável por armazenar todos os dados de negócio para permitir o funcionamento offline (detalhado na Seção 7).
+    *   **Armazenamento Chave-Valor:** O aplicativo também faz uso de `localStorage` (abstraído por `StorageUtils`) para salvar dados de sessão e configurações mais simples.
+
+*   **Principais Dependências e Funcionalidades:**
+    *   **Comunicação de Rede:** A comunicação com as APIs do servidor é feita através do **`@capacitor-community/http`** (^1.2.0). Há também uma dependência de `cordova-plugin-ftp` (^1.1.1), indicando uma possível funcionalidade de transferência de arquivos via FTP.
+    *   **Recursos do Dispositivo:**
+        *   `@capacitor-mlkit/barcode-scanning` (^5.4.0): Para a leitura de QR Codes (usado no login).
+        *   `@capacitor/camera` (^1.0.5): Para capturar fotos.
+        *   `cordova-plugin-geolocation` (^4.0.2): Para obter a localização do usuário (usado no registro de jornada).
+    *   **Componentes de UI e Auxiliares:**
+        *   `@tinymce/tinymce-angular` (^4.2.4): Um editor de texto rico (Rich Text Editor), provavelmente usado em campos de observação ou descrição.
+        *   `ng2-pdf-viewer` (^6.3.0): Para visualizar documentos PDF dentro do aplicativo.
+        *   `openvidu-browser` (^2.18.1) e `twilio-video` (^2.16.0): Indicam a existência de uma funcionalidade de videoconferência ou comunicação por vídeo em tempo real.
+
+### 2.3. Módulos Principais da Aplicação
 
 O aplicativo é organizado em um conjunto de módulos funcionais dentro do diretório `src/app`. A análise inicial da estrutura de pastas e do arquivo de roteamento principal (`app-routing.module.ts`) revela os seguintes módulos:
 
@@ -38,21 +81,25 @@ O aplicativo é organizado em um conjunto de módulos funcionais dentro do diret
 *   **`sincronizacao`**: Módulo técnico para sincronização de dados entre o dispositivo e o servidor.
 *   **`cub3`**: Módulo de serviço, identificado pelo `Cub3AuthGuard` como responsável pelo controle de acesso às rotas autenticadas.
 
-### 2.1. Módulos Pendentes de Análise Detalhada
-
-A seguinte lista representa os módulos que serão analisados em detalhe nas próximas etapas deste relatório:
-
-*   `meus-dados` (e seus submódulos)
-*   `academico` (e seus submódulos)
-*   `ajustes`
-*   `notificacoes`
-*   `sincronizacao`
-*   `intro`
-*   `cub3`
-
 ## 3. Análise Detalhada por Módulo
 
 ### 3.1. Módulo de Login (`@src/app/login`)
+
+**Visão Geral (Explicação Não-Técnica)**
+
+Pense no módulo de login como a portaria principal de um grande colégio. É o primeiro ponto de contato e o mais importante para a segurança. A responsabilidade deste porteiro é garantir que apenas pessoas autorizadas — professores, no caso — possam entrar.
+
+O porteiro do aplicativo Sábio é bastante versátil. Ele consegue:
+1.  **Reconhecer rostos familiares:** Se um professor já entrou recentemente, o porteiro pode simplesmente acenar e deixá-lo passar, sem pedir as credenciais de novo (verificação de sessão).
+2.  **Pedir as credenciais completas:** Para um primeiro acesso ou se a identificação antiga expirou, ele pede o conjunto completo de informações (escola, matrícula, CPF, etc.).
+3.  **Ler crachás com QR Code:** Para agilizar, o professor pode simplesmente apresentar um crachá com um QR Code, e o porteiro faz a leitura para liberar o acesso rapidamente.
+4.  **Lidar com imprevistos:** Se o leitor de QR Code falhar, o porteiro é inteligente o suficiente para permitir que o professor mostre uma foto do crachá que ele tenha guardado no celular.
+
+O problema é que este "porteiro" (o componente de login) também acumula outras funções, como verificar se as luzes do pátio estão acesas (permissões do celular) e se o livro de registros principal está pronto (iniciar o banco de dados), o que o deixa sobrecarregado.
+
+---
+
+**Análise Técnica Detalhada**
 
 Este módulo é o ponto de entrada para autenticação. A implementação centraliza múltiplos fluxos de acesso e lógicas de negócio em um único componente.
 
@@ -91,6 +138,21 @@ O arquivo `login.page.ts` é um componente extenso (aprox. 750 linhas) que acumu
     *   **Recomendação:** Criar uma documentação ou guia de estilo para esses alertas, definindo padrões para títulos, mensagens e tipos (erro, sucesso, aviso). Isso garantirá consistência na comunicação com o usuário em todo o sistema.
 
 ### 3.2. Módulo Meus Dados (`@src/app/meus-dados`)
+
+**Visão Geral (Explicação Não-Técnica)**
+
+Se o aplicativo é um colégio, o módulo "Meus Dados" é a sala dos professores. É uma área pessoal e administrativa onde o usuário gerencia suas próprias informações e atividades, que são distintas do trabalho pedagógico direto com os alunos.
+
+Dentro desta "sala", o professor encontra:
+*   **Seu Quadro de Atribuições:** Uma lista de todas as escolas onde ele trabalha (`meus-dados-escolas`) e as matérias que leciona (`meus-dados-disciplinas`).
+*   **Sua Folha de Ponto:** Um histórico completo de seus registros de entrada e saída (`meus-dados-frequencia`).
+*   **O Relógio de Ponto:** Uma função para registrar um novo ponto (`meus-dados-registro-jornada-novo`). De forma inteligente, o aplicativo usa o GPS do celular para verificar se o professor está realmente na escola no momento do registro, agindo como um crachá de ponto com geolocalização.
+
+O principal ponto de atenção aqui é que cada uma dessas funções busca as informações diretamente do "arquivo local" (o banco de dados do celular), em vez de passar por um "secretário" (um serviço centralizado). Além disso, a forma como ele pede permissão para usar o GPS é um pouco brusca: em vez de pedir educadamente, ele pode recarregar a tela inteira se a permissão não for concedida, o que não é uma boa experiência.
+
+---
+
+**Análise Técnica Detalhada**
 
 Este módulo funciona como uma área pessoal para o usuário, centralizando informações e funcionalidades relacionadas ao seu perfil. Ele adapta seu conteúdo com base no tipo de usuário (Professor ou Aluno).
 
@@ -141,6 +203,26 @@ O módulo é composto pelos seguintes submódulos principais:
 
 ### 3.3. Módulo Acadêmico (`@src/app/academico`)
 
+**Visão Geral (Explicação Não-Técnica)**
+
+Este é o coração da escola, o pátio central e as salas de aula do aplicativo. É o módulo mais importante e complexo para o professor, onde todo o trabalho pedagógico acontece. Ele foi projetado como um "diário de classe digital" completo.
+
+A organização é similar a uma pasta de professor, com várias abas:
+*   **Aba "Início" (Painel Rápido):** Funciona como um quadro de avisos na sala dos professores, oferecendo uma visão geral e rápida das últimas aulas registradas, atalhos para as turmas e um resumo das atividades recentes.
+*   **Aba "Pedagógico" (Caixa de Ferramentas):** É o menu principal de ações, a "caixa de ferramentas" do professor. Daqui, ele pode acessar a lista de alunos, planejar o conteúdo das próximas aulas, registrar uma ocorrência disciplinar, etc.
+*   **Aba "Turmas" (Salas de Aula):** Uma lista direta de todas as turmas do professor. Clicar em uma delas é como entrar na sala de aula virtual daquela turma.
+*   **Aba "Meu Perfil" (Área Administrativa):** Uma pequena área de configurações onde o professor pode forçar a sincronização de dados com o sistema central da escola ou limpar os dados locais do aplicativo.
+
+As principais atividades que o professor realiza aqui são:
+*   **Registrar Aulas e Frequência:** O aplicativo guia o professor passo a passo para registrar uma nova aula (escolhendo a turma, a matéria, o conteúdo). Em seguida, ele pode fazer a chamada, seja vendo a lista de todos os alunos de uma vez ou passando por eles um a um, como se fosse de carteira em carteira.
+*   **Lançar Notas:** Esta é a caderneta digital. O professor vê a lista de alunos e as avaliações criadas, podendo inserir as notas diretamente.
+
+O grande desafio deste módulo é sua imensa complexidade. É como se um único professor estivesse tentando dar aula, fazer a chamada, corrigir provas e correr para o arquivo para pegar e guardar cada documento, tudo ao mesmo tempo. A lógica de negócio e o acesso aos dados estão misturados, tornando o módulo difícil de manter e escalar.
+
+---
+
+**Análise Técnica Detalhada**
+
 Este é o módulo mais extenso e central da aplicação para o perfil de professor, abrangendo a maior parte das funcionalidades pedagógicas, como gestão de turmas, aulas, notas, frequência, conteúdo programático e ocorrências.
 
 #### 3.3.1. Visão Geral e Estrutura
@@ -188,6 +270,20 @@ O módulo é composto por uma vasta coleção de páginas e submódulos, cada um
 
 ### 3.4. Módulo Ajustes (`@src/app/ajustes`)
 
+**Visão Geral (Explicação Não-Técnica)**
+
+Pense neste módulo como a "sala de manutenção" do aplicativo. É uma área simples e funcional, focada em tarefas de "limpeza" e gerenciamento geral, em vez de funcionalidades pedagógicas.
+
+Nesta sala, o usuário tem acesso a duas ferramentas principais:
+*   **"Apagar arquivos":** Funciona como um botão para esvaziar o depósito. O aplicativo pode baixar materiais de apoio, como vídeos e documentos. Esta opção permite ao usuário apagar esses arquivos baixados para liberar espaço de armazenamento no celular.
+*   **"Finalizar sessão":** Este é o botão de "desligar geral". Ele encerra a sessão do usuário de forma segura, limpando suas informações de login do dispositivo e o levando de volta para a tela de entrada (login).
+
+Um ponto a ser observado é que a ferramenta de "Apagar arquivos" poderia ser mais comunicativa. Atualmente, ela informa que o trabalho foi concluído após alguns segundos, mesmo que tenha encontrado algum problema no meio do caminho e não tenha conseguido apagar tudo.
+
+---
+
+**Análise Técnica Detalhada**
+
 Este módulo oferece uma tela de configurações simples, com funcionalidades de gerenciamento de dados locais e de sessão.
 
 #### 3.4.1. Visão Geral e Estrutura
@@ -218,6 +314,14 @@ Adicionalmente, o rodapé da página exibe a versão atual do aplicativo, obtida
 
 ### 3.5. Módulo Notificações (`@src/app/notificacoes`)
 
+**Visão Geral (Explicação Não-Técnica)**
+
+Este módulo deveria ser o "mural de avisos" ou a "caixa de correio" do professor. No entanto, na prática, é um mural vazio com um aviso permanente que diz "Nenhuma notificação". A estrutura foi criada, mas a funcionalidade para buscar e mostrar mensagens reais nunca foi implementada.
+
+---
+
+**Análise Técnica Detalhada**
+
 Este módulo foi projetado para ser a central de notificações do aplicativo, mas sua implementação atual é um placeholder.
 
 #### 3.5.1. Visão Geral e Estrutura
@@ -243,6 +347,14 @@ O módulo consiste em um único componente, `NotificacoesPage`, que é acessado 
     *   **Gerenciamento de Estado:** Implementar a lógica para marcar notificações como lidas/não lidas e permitir que o usuário interaja com elas (ex: navegar para uma tela específica ao tocar em uma notificação).
 
 ### 3.6. Módulo Sincronização (`@src/app/sincronizacao`)
+
+**Visão Geral (Explicação Não-Técnica)**
+
+Este módulo é como uma sala que consta na planta do colégio, mas que nunca foi construída. É um espaço vazio, um placeholder. A intenção era, provavelmente, centralizar aqui toda a lógica de sincronização de dados (o processo de enviar e receber informações do servidor central da escola). No entanto, essa "sala de sincronização" nunca foi equipada, e a tarefa acabou sendo feita de forma improvisada em outros locais do aplicativo.
+
+---
+
+**Análise Técnica Detalhada**
 
 Este módulo representa um scaffold gerado que nunca foi implementado.
 
@@ -291,25 +403,6 @@ O módulo é composto por um único componente, `IntroPage`, que serve como o pr
     *   A permissão de **Localização** deve ser solicitada quando o professor acessar a tela de "Registro de Jornada" no módulo `Meus Dados`.
     *   A lógica de solicitação de permissões deve ser removida do `IntroPage` e movida para os componentes específicos que dependem desses recursos nativos.
 
-## 4. Tecnologias e Dependências
-
-O aplicativo é construído sobre a plataforma Angular com o framework de UI Ionic. A comunicação com as funcionalidades nativas do dispositivo é gerenciada pelo Capacitor.
-
-*(Fonte: `package.json`)*
-
-*   **Framework Base:** `@angular/core` (~9.1.6), `@ionic/angular` (^5.0.0)
-*   **Ponte Nativa:** `@capacitor/core` (3.2.2)
-*   **Banco de Dados Local:** `@capacitor-community/sqlite` (^3.7.0)
-*   **Comunicação de Rede:** `@capacitor-community/http` (^1.2.0), `cordova-plugin-ftp` (^1.1.1)
-*   **Recursos do Dispositivo:**
-    *   `@capacitor-mlkit/barcode-scanning` (^5.4.0)
-    *   `@capacitor/camera` (^1.0.5)
-    *   `cordova-plugin-geolocation` (^4.0.2)
-*   **Componentes de UI e Auxiliares:**
-    *   `@tinymce/tinymce-angular` (^4.2.4) (Editor de texto)
-    *   `ng2-pdf-viewer` (^6.3.0) (Visualizador de PDF)
-    *   `openvidu-browser` (^2.18.1), `twilio-video` (^2.16.0) (Indicam funcionalidade de vídeo em tempo real)
-
 ## 5. Requisitos de Permissões
 
 As dependências do projeto indicam a necessidade das seguintes permissões no dispositivo do usuário para o funcionamento completo da aplicação:
@@ -325,7 +418,7 @@ As dependências do projeto indicam a necessidade das seguintes permissões no d
 
 Este é o módulo mais crítico e central de toda a arquitetura da aplicação, funcionando como um "Shared Module" ou "Core Module" monolítico.
 
-#### 6.1. Visão Geral e Estrutura
+#### 6.1. Análise Original (Visão Geral)
 
 O `Cub3Module` não representa uma funcionalidade de negócio, mas sim uma biblioteca interna que fornece uma vasta gama de recursos para todos os outros módulos. Sua estrutura é composta por:
 
@@ -336,37 +429,249 @@ O `Cub3Module` não representa uma funcionalidade de negócio, mas sim uma bibli
 *   **Utilitários (`utils`):** Inclui classes de ajuda, como `StorageUtils` para manipulação do `localStorage`.
 *   **Configuração (`cub3-config.ts`):** Centraliza constantes e URLs da aplicação.
 
-#### 6.2. Análise dos Principais Componentes e Serviços
+#### 6.2. Análise Aprofundada (Mapeamento de Banco, Entidades e Serviços)
 
-*   **`Cub3SvcProvider`:** Este é o serviço mais acoplado e com maior número de responsabilidades em todo o projeto. Ele gerencia:
-    *   **Comunicação com API:** Métodos para `POST`, `GET`, `PUT` (ex: `postRequest`, `getNode`).
-    *   **UI:** Funções para exibir alertas (`alerta`), toasts (`alertaToast`) e telas de carregamento (`carregar`).
-    *   **Lógica de Sincronização:** O método `sincronizar()` contém a lógica para enviar dados locais (Ocorrências, Aulas, Frequência, etc.) para o servidor.
-    *   **Interação com Hardware:** Métodos para controle de câmera (`iniciarCamera`, `capturarCamera`).
-    *   **Funções Utilitárias:** Formatação de dados, manipulação de strings, etc.
+*   **Mapeamento do Banco de Dados e Persistência:**
+    *   **Definição do Esquema (`@src/assets/cub3/sql/init.json`):** Este arquivo contém múltiplos comandos `CREATE TABLE` em SQL, definindo a estrutura completa do banco de dados local.
+    *   **Provedor de Acesso ao Banco (`@src/app/cub3/cub3-db/cub3-db.ts`):** A classe `Cub3DbProvider` atua como a camada de acesso a dados (DAO), mas com uma complexidade crítica: possui uma **estratégia de persistência dupla e confusa**. Utiliza SQLite em dispositivos móveis e WebSQL (obsoleto) em navegadores, mas, em paralelo, oferece um conjunto de métodos (`getStorage`, `setStorage`, `queryStorage`) que manipulam o `@ionic/storage` (geralmente `localStorage`). Isso cria duas fontes de verdade para os dados, um débito técnico severo.
 
-*   **`Cub3DbProvider`:** Atua como a camada de persistência de dados. Uma análise detalhada revela uma dualidade de implementações:
-    *   **Nativa:** Utiliza `@ionic-native/sqlite` para operações em dispositivos móveis.
-    *   **Browser:** Utiliza `window.openDatabase` (WebSQL) para o navegador.
-    *   **`localStorage`:** Contém métodos paralelos (`getStorage`, `setStorage`, `queryStorage`) que parecem replicar a funcionalidade de banco de dados, mas utilizando o `localStorage` através do `@ionic/storage`, o que gera confusão e duplicação de fontes de dados.
+*   **Entidades de Dados (`@src/app/cub3/classes/`):**
+    *   Classes como `Aluno`, `Usuario`, `Turma` modelam as tabelas do banco e as respostas da API. São **Modelos Ricos**, contendo não apenas dados, mas também lógica de apresentação (ex: `Aluno.ts` com o método `getAvatar()`).
 
-*   **Componentes de Vídeo e Câmera:** A suíte de componentes (`Cub3CameraComponent`, `WebcamModalComponent`, `Cub3VideoParticipantesComponent`, etc.) encapsula a complexa lógica de interação com a API de vídeo (Twilio Video), seleção de dispositivos de mídia e o fluxo de captura e validação facial.
+*   **O "God Service" - `Cub3SvcProvider.ts`:**
+    *   Este serviço é o "canivete suíço" da aplicação, centralizando responsabilidades de forma excessiva: comunicação com API, controle de UI (alertas, toasts), lógica de sincronização offline, interação com hardware (câmera) e funções utilitárias.
 
-*   **`StorageUtils`:** Uma classe estática que serve como um wrapper para o `localStorage`, usada para armazenar e recuperar informações da sessão do usuário (`getAccount`), token (`getToken`) e outros dados.
+*   **Componentes de UI e Features Complexas:**
+    *   O módulo também exporta componentes reutilizáveis (`Cub3HeaderComponent`) e encapsula funcionalidades inteiras, como a suíte de vídeo em tempo real (`Cub3CameraComponent`, `WebcamModalComponent`).
 
-#### 6.3. Pontos de Atenção e Recomendações (Módulo Cub3)
+*   **Autenticação e Utilitários:**
+    *   Contém os serviços de autenticação (`auth.service.ts`) e utilitários de acesso direto ao `localStorage` (`storage.utils.ts`).
 
-1.  **Violação Massiva do Princípio de Responsabilidade Única (SRP):** O `Cub3Module`, e especialmente o `Cub3SvcProvider`, são exemplos clássicos de "God Objects". Eles fazem de tudo, tornando o código extremamente difícil de entender, manter, testar e depurar.
+#### 6.3. Diagrama de Relacionamento das Entidades (Simplificado)
 
-2.  **Alto Acoplamento:** Quase todos os módulos da aplicação dependem diretamente do `Cub3Module`. Qualquer alteração em uma função interna do `Cub3SvcProvider` tem o potencial de quebrar múltiplas funcionalidades em locais inesperados.
+O diagrama abaixo ilustra as principais relações entre as tabelas do banco de dados local.
 
-3.  **Dificuldade de Teste:** É praticamente inviável escrever testes unitários eficazes para o `Cub3SvcProvider` devido à sua enorme quantidade de dependências e responsabilidades (HTTP, SQLite, UI, etc.).
+#### 6.4. Pontos de Atenção e Recomendações (Módulo Cub3)
 
-4.  **Estratégia de Persistência Confusa:** A coexistência de um provedor de banco de dados (`Cub3DbProvider`) com métodos que manipulam o `localStorage` (`getStorage`, `setStorage`) para fins similares cria uma arquitetura de dados ambígua e propensa a erros de consistência.
+1.  **Violação Massiva do Princípio de Responsabilidade Única (SRP):** O `Cub3Module`, e especialmente o `Cub3SvcProvider`, são "God Objects". Eles fazem de tudo, tornando o código extremamente difícil de manter e testar.
+2.  **Alto Acoplamento:** Quase todos os módulos da aplicação dependem diretamente do `Cub3Module`. Qualquer alteração em uma função interna do `Cub3SvcProvider` tem o potencial de quebrar múltiplas funcionalidades.
+3.  **Dificuldade de Teste:** É praticamente inviável escrever testes unitários eficazes para o `Cub3SvcProvider` devido à sua enorme quantidade de dependências e responsabilidades.
+4.  **Estratégia de Persistência Confusa:** A coexistência de um provedor de banco de dados (`Cub3DbProvider`) com métodos que manipulam o `localStorage` para fins similares cria uma arquitetura de dados ambígua e propensa a erros.
+5.  **Recomendação Estratégica:** Para futuras manutenções, é crucial **decompor este módulo**.
+    *   **Refatorar `Cub3SvcProvider`:** Extrair suas responsabilidades para serviços menores e focados (ex: `ApiService`, `SyncService`, `UiNotificationService`, `CameraService`).
+    *   **Criar um `CoreModule`:** Para abrigar os serviços singleton (instanciados uma única vez).
+    *   **Criar um `SharedUiModule`:** Para declarar e exportar componentes de UI reutilizáveis.
+    *   **Unificar a Persistência:** Escolher uma única estratégia de persistência (SQLite/IndexedDB) e centralizar todo o acesso através de serviços de repositório, eliminando a duplicação de lógica com o `localStorage`.
 
-5.  **Recomendação (Documentação):** Para futuras manutenções e evoluções do projeto, é crucial considerar a decomposição deste módulo. A abordagem recomendada seria:
-    *   **Refatorar `Cub3SvcProvider`:** Extrair suas múltiplas responsabilidades para serviços menores e focados (ex: `ApiService`, `SyncService`, `NotificationService`, `CameraService`).
-    *   **Criar um `CoreModule`:** Para abrigar os serviços singleton (instanciados uma única vez), como os novos serviços refatorados.
-    *   **Criar um `SharedUiModule`:** Para declarar e exportar componentes de UI reutilizáveis, como o `Cub3HeaderComponent`.
-    *   **Criar Módulos de Funcionalidade:** Isolar features complexas, como toda a lógica de vídeo, em seu próprio módulo (`VideoModule`).
-    *   **Unificar a Persistência:** Escolher uma única estratégia de persistência de dados (SQLite/IndexedDB) e centralizar todo o acesso através de serviços de repositório, eliminando a duplicação de lógica com o `localStorage`.
+## 7. Banco de Dados
+
+Esta seção detalha a estrutura, o propósito e os relacionamentos do banco de dados local, que é o coração do funcionamento offline do aplicativo Sábio.
+
+### 7.1. Visão Geral e Arquitetura de Dados (Explicação Não-Técnica)
+
+Para entender o banco de dados de forma simples, podemos imaginá-lo como um grande arquivo de aço de uma escola, perfeitamente organizado.
+
+*   **Gaveta 1: Pessoas**
+    *   **Fichas de Professores (`MOB_LOGIN`):** Contém a ficha de cada professor, com seu nome, login, senha e outras informações de acesso.
+    *   **Fichas de Alunos (`MOB_ALUNOS`):** A ficha de cada aluno, com nome, data de nascimento, nome da mãe e contatos.
+
+*   **Gaveta 2: A Estrutura da Escola**
+    *   **Pastas de Escolas (`MOB_ESCOLA`):** Uma pasta para cada escola.
+    *   **Pastas de Séries (`MOB_ETAPAS`):** Pastas para "Ensino Fundamental", "9º Ano", etc.
+    *   **Pastas de Turmas (`MOB_TURMAS`):** Pastas para "Turma 9A", "Turma 9B", que pertencem a uma série e a uma escola.
+    *   **Pastas de Matérias (`MOB_DISCIPLINAS`):** Uma pasta para "Matemática", "Português", etc.
+
+*   **Gaveta 3: Conectando Tudo (Tabelas de Ligação)**
+    Como um professor pode dar aula em várias turmas e um aluno só pertence a uma, usamos "fichas de ligação" para conectar tudo:
+    *   `MOB_PROF_ESCOLA`: Liga um professor a uma escola.
+    *   `MOB_PROF_TURMAS`: Liga um professor a uma turma.
+    *   `MOB_TURMAS_ALUNOS`: É a **matrícula**, a ficha que coloca um aluno específico dentro de uma turma em uma escola.
+
+*   **Gaveta 4: O Dia a Dia (Registros de Atividades)**
+    Esta é a gaveta mais movimentada, onde o trabalho diário é registrado:
+    *   **Diário de Classe (`MOB_REGISTRO_AULA`):** Cada vez que um professor dá uma aula, ele preenche uma folha neste diário, anotando o assunto, a data e a matéria.
+    *   **Lista de Chamada (`MOV_REGISTRO_FREQUENCIA`):** Anexada a cada "Diário de Classe", esta lista marca quem estava presente ou ausente.
+    *   **Caderneta de Notas (`MOB_AVALIACAO` e `MOB_AVALIACAO_NOTA`):** O professor primeiro cria uma "Avaliação" (ex: "Prova 1º Bimestre"). Depois, ele preenche a "Folha de Notas" com a nota de cada aluno para aquela avaliação.
+    *   **Livro de Ocorrências (`MOB_OCORRENCIA`):** Onde são registradas as ocorrências disciplinares ou pedagógicas de cada aluno.
+
+*   **Catálogos de Referência (Tabelas Auxiliares)**
+    Para manter a padronização, o sistema usa pequenos catálogos:
+    *   `MOB_OCORRENCIAS`: Lista os tipos de ocorrência (Atraso, Indisciplina).
+    *   `MOB_CONCEITOS`: Lista os conceitos que podem ser usados nas notas (A, B, C ou Ótimo, Bom).
+    *   `MOB_JUSTIFICATIVA`: Lista os tipos de justificativa para faltas ou notas.
+
+Essa organização garante que, mesmo sem internet, o professor tenha em seu dispositivo todos os dados de que precisa para gerenciar suas turmas, registrar aulas, fazer a chamada e lançar notas.
+
+### 7.2. Documentação Técnica
+
+O banco de dados local é a espinha dorsal da funcionalidade offline do aplicativo, projetado para espelhar os dados essenciais do servidor e permitir que o professor realize todas as suas tarefas sem uma conexão ativa.
+
+*   **Tecnologia:** A aplicação utiliza um banco de dados relacional **SQLite**, que é o padrão de fato para armazenamento de dados estruturados em aplicações móveis. A interação é gerenciada através do plugin `@capacitor-community/sqlite`.
+
+*   **Arquivos de Referência do Esquema:** A estrutura do banco de dados está consolidada e documentada nos seguintes artefatos do projeto:
+    *   `dbdiagram.io`: Arquivo no formato DBML que serve como a documentação visual e textual principal do esquema e seus relacionamentos. **É a fonte da verdade para o design do banco.**
+    *   `schema.sql`: Script SQL "limpo" contendo apenas os comandos `CREATE TABLE` com todas as restrições. Ideal para referência rápida da estrutura.
+    *   `populated_schema.sql`: Script SQL completo que cria o esquema e o popula com dados de exemplo, essencial para desenvolvimento e testes.
+
+#### 7.2.1. Análise da Estrutura e Tabelas Principais
+
+As tabelas são organizadas em quatro grupos lógicos, refletindo a arquitetura de um sistema de gestão acadêmica.
+
+**1. Entidades Principais:** São as tabelas que armazenam os dados mestres do sistema.
+    *   `MOB_LOGIN`: Armazena os dados dos profissionais (usuários).
+    *   `MOB_ALUNOS`: Cadastro central de todos os alunos.
+    *   `MOB_ESCOLA`, `MOB_ETAPAS`, `MOB_TURMAS`, `MOB_DISCIPLINAS`: Descrevem a estrutura física e pedagógica (escolas, séries, turmas e matérias).
+
+**2. Tabelas de Junção (Relacionamento N-para-N):** Essenciais para conectar as entidades principais.
+    *   `MOB_PROF_ESCOLA`: Associa professores a escolas.
+    *   `MOB_PROF_TURMAS`: Associa professores a turmas.
+    *   `MOB_PROF_DISCIPLINAS`: Associa um professor a uma disciplina dentro de uma turma específica.
+    *   `MOB_TURMAS_ALUNOS`: A tabela de **matrícula**, que efetivamente conecta um aluno a uma turma em uma escola para um determinado ano letivo. É uma das tabelas mais centrais do sistema.
+
+**3. Tabelas Transacionais:** Registram as atividades do dia a dia. São as tabelas que mais crescem em volume de dados.
+    *   `MOB_REGISTRO_AULA`: Cada linha é uma aula ministrada, com o conteúdo abordado.
+    *   `MOV_REGISTRO_FREQUENCIA`: Registra a presença ou ausência de cada aluno em cada aula registrada na tabela anterior.
+    *   `MOB_AVALIACAO` e `MOB_AVALIACAO_NOTA`: Permitem a criação de avaliações (provas, trabalhos) e o lançamento das notas correspondentes para cada aluno matriculado.
+    *   `MOB_OCORRENCIA`: Armazena registros disciplinares ou pedagógicos.
+
+**4. Tabelas Auxiliares (Catálogos):** Tabelas de apoio que servem como "listas de opções" para outras partes do sistema, garantindo a consistência dos dados.
+    *   `MOB_OCORRENCIAS`, `MOB_CONCEITOS`, `MOB_JUSTIFICATIVA`: Contêm as descrições para tipos de ocorrências, conceitos de notas e justificativas, respectivamente.
+
+#### 7.2.2. Estratégia de Chaves e Integridade de Dados
+
+A integridade do banco de dados é mantida por um uso consistente de chaves primárias e estrangeiras.
+
+*   **Chaves Primárias (PK):** A maioria das tabelas usa uma única coluna `INTEGER` como chave primária (ex: `IDF_ALUNO` em `MOB_ALUNOS`). Tabelas transacionais como `MOB_REGISTRO_AULA` e `MOB_OCORRENCIA` utilizam `PRIMARY KEY AUTOINCREMENT` para gerar IDs únicos localmente no dispositivo, evitando conflitos antes da sincronização com o servidor.
+
+*   **Chaves Primárias Compostas:** As tabelas de junção (ex: `MOB_PROF_TURMAS`) utilizam chaves primárias compostas por múltiplos campos (ex: `ANO_LETIVO`, `IDF_TURMA`, `IDF_PROFISSIONAL`). Isso garante que a combinação de um professor a uma turma em um ano letivo seja única.
+
+*   **Chaves Estrangeiras (FK):** As restrições de chave estrangeira (`FOREIGN KEY`) são usadas extensivamente para garantir a integridade referencial. Por exemplo, não é possível registrar uma frequência (`MOV_REGISTRO_FREQUENCIA`) para um aluno que não existe na tabela `MOB_ALUNOS`. O comando `PRAGMA foreign_keys = ON;` no início do script `populated_schema.sql` é crucial para ativar essa verificação no SQLite.
+
+#### 7.2.3. Considerações de Desempenho e Sincronização
+
+*   **Funcionamento Offline:** O propósito deste banco de dados é permitir que o aplicativo funcione de forma autônoma. Os dados são carregados do servidor central durante o processo de **sincronização** e armazenados localmente. Novos registros (aulas, frequências, notas) são salvos primeiro no SQLite local e posteriormente enviados ao servidor quando uma conexão estiver disponível.
+
+*   **Potencial de Indexação:** Embora os scripts de criação não definam índices explicitamente (além daqueles criados automaticamente para as chaves primárias), a performance em dispositivos com grande volume de dados se beneficiaria enormemente da criação de **índices** nas colunas de chave estrangeira (ex: `MOV_REGISTRO_FREQUENCIA.IDF_AULA`, `MOV_REGISTRO_FREQUENCIA.IDF_ALUNO`, `MOB_REGISTRO_AULA.IDF_TURMA`). Isso aceleraria drasticamente as consultas (`SELECT`) que utilizam `JOIN`s entre as tabelas.
+
+#### 7.2.4. Diagrama de Entidade-Relacionamento (ER)
+O diagrama abaixo ilustra a estrutura completa do banco de dados, incluindo todas as tabelas e seus relacionamentos.
+
+    ```mermaid
+    erDiagram
+        %% Entidades Principais
+        MOB_LOGIN {
+            int IDF_PROFISSIONAL PK "ID do Profissional"
+            string NME_PROFISSIONAL "Nome"
+        }
+        MOB_ALUNOS {
+            int IDF_ALUNO PK "ID do Aluno"
+            string NME_ALUNO "Nome"
+        }
+        MOB_ESCOLA {
+            int IDF_ESCOLA PK "ID da Escola"
+            string NME_ESCOLA "Nome"
+        }
+        MOB_TURMAS {
+            int IDF_TURMA PK "ID da Turma"
+            string NME_TURMA "Nome"
+            int IDF_ETAPA FK "ID da Etapa"
+        }
+        MOB_DISCIPLINAS {
+            int IDF_DISCIPLINA PK "ID da Disciplina"
+            string NME_DISCIPLINA "Nome"
+        }
+        MOB_ETAPAS {
+            int IDF_ETAPA PK "ID da Etapa"
+            string DES_ETAPA "Descrição"
+        }
+
+        %% Tabelas Transacionais
+        MOB_REGISTRO_AULA {
+            int IDF_AULA PK "ID da Aula"
+            int IDF_TURMA FK
+            int IDF_DISCIPLINA FK
+            int IDF_PROFISSIONAL FK
+            string DES_ASSUNTO "Assunto"
+        }
+        MOV_REGISTRO_FREQUENCIA {
+            int IDF_FREQUENCIA PK "ID da Frequência"
+            int IDF_AULA FK
+            int IDF_ALUNO FK
+            string SIT_ALUNO "Situação"
+        }
+        MOB_AVALIACAO {
+            int IDF_AVALIACAO PK "ID da Avaliação"
+            int IDF_TURMA FK
+            int IDF_DISCIPLINA FK
+            string DES_AVALIACAO "Descrição"
+        }
+        MOB_AVALIACAO_NOTA {
+            int IDF_AVALIACAO PK,FK
+            int IDF_ALUNOESCOLA PK,FK
+            real NOTA_AVALIACAO "Nota"
+            int IDF_CONCEITO FK
+            int IDF_JUSTIFICATIVA FK
+        }
+        MOB_OCORRENCIA {
+            int IDF_OCORRENCIA_LOCAL PK "ID Local"
+            int IDF_OCORRENCIA FK "ID do Tipo"
+            int IDF_ALUNO FK
+            string TXT_OCORRENCIA "Texto"
+        }
+
+        %% Tabelas de Junção
+        MOB_PROF_ESCOLA {
+            int IDF_PROFISSIONAL PK,FK
+            int IDF_ESCOLA PK,FK
+            int ANO_LETIVO PK "Ano"
+        }
+        MOB_PROF_TURMAS {
+            int IDF_PROFISSIONAL PK,FK
+            int IDF_TURMA PK,FK
+            int ANO_LETIVO PK "Ano"
+        }
+        MOB_TURMAS_ALUNOS {
+            int IDF_ALUNOESCOLA PK "ID Matrícula"
+            int IDF_TURMA FK
+            int IDF_ALUNO FK
+            int IDF_ESCOLA FK
+        }
+
+        %% Tabelas Auxiliares (Catálogos)
+        MOB_OCORRENCIAS {
+            int IDF_OCORRENCIA PK "ID Tipo Ocorrência"
+            string DES_OCORRENCIA "Descrição"
+        }
+        MOB_CONCEITOS {
+            int IDF_CONCEITO PK "ID Conceito"
+            string DES_CONCEITO "Descrição"
+        }
+        MOB_JUSTIFICATIVA {
+            int IDF_JUSTIFICATIVA PK "ID Justificativa"
+            string DES_JUSTIFICATIVA "Descrição"
+        }
+
+        %% Relacionamentos
+        MOB_LOGIN      ||--|{ MOB_PROF_ESCOLA : "leciona em"
+        MOB_ESCOLA     ||--|{ MOB_PROF_ESCOLA : "tem"
+        MOB_LOGIN      ||--|{ MOB_PROF_TURMAS : "leciona para"
+        MOB_TURMAS     ||--|{ MOB_PROF_TURMAS : "tem"
+        MOB_ESCOLA     ||--|{ MOB_TURMAS_ALUNOS : "contém"
+        MOB_TURMAS     ||--|{ MOB_TURMAS_ALUNOS : "agrupa"
+        MOB_ALUNOS     ||--|{ MOB_TURMAS_ALUNOS : "está em"
+        MOB_ETAPAS     ||--|{ MOB_TURMAS : "pertence a"
+        MOB_TURMAS     ||--|{ MOB_AVALIACAO : "tem"
+        MOB_DISCIPLINAS||--|{ MOB_AVALIACAO : "é de"
+        MOB_AVALIACAO  ||--|{ MOB_AVALIACAO_NOTA : "tem notas"
+        MOB_TURMAS_ALUNOS ||--|{ MOB_AVALIACAO_NOTA : "recebe nota"
+        MOB_TURMAS     ||--|{ MOB_REGISTRO_AULA : "tem aulas de"
+        MOB_DISCIPLINAS||--|{ MOB_REGISTRO_AULA : "tem aulas de"
+        MOB_LOGIN      ||--|{ MOB_REGISTRO_AULA : "ministra"
+        MOB_REGISTRO_AULA ||--|{ MOV_REGISTRO_FREQUENCIA : "registra"
+        MOB_ALUNOS     ||--|{ MOV_REGISTRO_FREQUENCIA : "tem frequência em"
+        MOB_ALUNOS     ||--|{ MOB_OCORRENCIA : "tem"
+        MOB_OCORRENCIAS ||--|{ MOB_OCORRENCIA : "é do tipo"
+        MOB_CONCEITOS ||--|{ MOB_AVALIACAO_NOTA : "usa"
+        MOB_JUSTIFICATIVA ||--|{ MOB_AVALIACAO_NOTA : "usa"
+    ```
+
